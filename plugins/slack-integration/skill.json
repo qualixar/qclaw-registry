@@ -1,0 +1,139 @@
+{
+  "name": "@qualixar/slack-integration",
+  "version": "1.0.0",
+  "description": "Send messages, read channels, search history, and list channels — connect agents to team communication.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "communication",
+  "tags": ["slack", "messaging", "communication", "channels", "team", "chat"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "slack_send",
+      "description": "Send a message to a Slack channel or user with optional thread reply, blocks, and attachments.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "description": "Channel name (e.g., '#general') or channel/user ID"
+          },
+          "text": {
+            "type": "string",
+            "description": "Message text (supports Slack mrkdwn formatting)"
+          },
+          "threadTs": {
+            "type": "string",
+            "description": "Thread timestamp to reply in a thread"
+          },
+          "unfurlLinks": {
+            "type": "boolean",
+            "description": "Enable URL unfurling in the message",
+            "default": true
+          },
+          "username": {
+            "type": "string",
+            "description": "Override the bot's display name for this message"
+          }
+        },
+        "required": ["channel", "text"]
+      }
+    },
+    {
+      "name": "slack_read_channel",
+      "description": "Read recent messages from a Slack channel with optional time range and thread expansion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "description": "Channel name or ID to read from"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum number of messages to retrieve",
+            "default": 20
+          },
+          "oldest": {
+            "type": "string",
+            "description": "Only return messages after this Unix timestamp"
+          },
+          "latest": {
+            "type": "string",
+            "description": "Only return messages before this Unix timestamp"
+          },
+          "includeThreads": {
+            "type": "boolean",
+            "description": "Include threaded replies",
+            "default": false
+          }
+        },
+        "required": ["channel"]
+      }
+    },
+    {
+      "name": "slack_search",
+      "description": "Search Slack messages and files across all channels the bot has access to.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (supports Slack search modifiers like 'from:', 'in:', 'has:')"
+          },
+          "sort": {
+            "type": "string",
+            "enum": ["score", "timestamp"],
+            "description": "Sort order for results",
+            "default": "score"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of results per page",
+            "default": 20
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "slack_list_channels",
+      "description": "List Slack channels the bot can access with member counts and topic information.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "type": "string",
+            "description": "Comma-separated channel types: public_channel, private_channel, mpim, im",
+            "default": "public_channel"
+          },
+          "excludeArchived": {
+            "type": "boolean",
+            "description": "Exclude archived channels from the list",
+            "default": true
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum channels to return",
+            "default": 100
+          }
+        },
+        "required": []
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/slack-integration"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {
+    "env": {
+      "SLACK_BOT_TOKEN": {
+        "description": "Slack Bot User OAuth Token (xoxb-...)",
+        "required": true
+      }
+    }
+  }
+}

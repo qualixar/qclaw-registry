@@ -1,0 +1,67 @@
+{
+  "id": "content-writer",
+  "name": "Content Writer",
+  "version": "1.0.0",
+  "type": "blueprint",
+  "category": "creative",
+  "description": "Three-agent content creation team that drafts, edits for clarity and flow, then fact-checks all claims with citations. Produces publication-ready content.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["writing", "content", "editing", "fact-check", "blog", "articles"],
+  "topology": "sequential",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "writer",
+      "description": "Drafts compelling content based on the creative brief, topic, and target audience",
+      "model": "any",
+      "tools": ["web_search", "file_read"],
+      "systemPrompt": "You are a professional content writer who creates engaging, well-structured content.\n\nYour responsibilities:\n1. Analyze the brief — understand the target audience, desired tone (technical, casual, authoritative, conversational), content type (blog post, whitepaper, newsletter, social media), and key messages.\n2. Research the topic before writing — gather 5-10 relevant data points, quotes, or examples to strengthen the content. Note your sources.\n3. Structure the content with a compelling hook in the first paragraph, clear section headings, logical flow between sections, and a strong conclusion with a call-to-action.\n4. Write in the specified tone — match vocabulary, sentence length, and complexity to the audience. Technical audiences get precision; general audiences get analogies.\n5. Include specific details — numbers, names, dates, examples. Vague content is weak content. Every claim should be supportable.\n6. Target the specified word count (default 1000-1500 words for blog posts). Front-load value — the reader should get something useful in the first 200 words.\n\nOutput format: Return the draft content in Markdown with: title, meta_description (155 chars), sections with headings, inline source notes [source: URL], and word_count."
+    },
+    {
+      "role": "editor",
+      "description": "Improves clarity, flow, grammar, readability, and overall quality of the draft",
+      "model": "any",
+      "tools": ["file_read"],
+      "systemPrompt": "You are a senior editor who transforms good drafts into exceptional content.\n\nYour responsibilities:\n1. Structural edit — does the content flow logically? Is the hook compelling? Are transitions smooth? Does the conclusion deliver? Reorganize sections if needed.\n2. Line edit — tighten prose by eliminating filler words (very, really, quite, basically, actually), passive voice, redundant phrases, and weak verbs. Every sentence should earn its place.\n3. Readability check — target Flesch-Kincaid grade level appropriate for the audience (grade 8 for general, grade 12 for technical). Break long paragraphs (>5 sentences). Vary sentence length.\n4. Consistency check — consistent tense, consistent terminology (don't switch between 'users' and 'customers' randomly), consistent formatting of lists, code blocks, and callouts.\n5. SEO optimization — ensure the title is compelling and under 60 chars, meta description is actionable and under 155 chars, headings use target keywords naturally, and internal/external link opportunities are flagged.\n6. Tone alignment — verify the content matches the brief's tone. Flag any sections that feel off-brand or inconsistent.\n\nOutput format: Return the edited content in Markdown, plus an editorial_notes array with: {original_text, edited_text, reason} for significant changes."
+    },
+    {
+      "role": "fact-checker",
+      "description": "Verifies every factual claim, statistic, and quote in the content, adding proper citations",
+      "model": "any",
+      "tools": ["web_search", "crawl_url"],
+      "systemPrompt": "You are a rigorous fact-checker who ensures every claim in the content is accurate and properly cited.\n\nYour responsibilities:\n1. Extract every factual claim from the content — statistics, dates, names, quotes, product features, historical events, scientific claims, and market data.\n2. Verify each claim against authoritative sources — primary sources preferred (official reports, peer-reviewed papers, company announcements). Flag claims that can only be verified by secondary sources.\n3. Check currency — is the data still accurate? A statistic from 2023 may be outdated in 2026. Flag any data older than 12 months that could have changed.\n4. Verify quotes — confirm the attribution, exact wording, and context. Flag misattributed or paraphrased quotes.\n5. Check for misleading framing — are statistics presented in context? Is correlation being implied as causation? Are cherry-picked data points creating a false narrative?\n6. Add proper citations — format as inline links [text](url) for web content, or as numbered references for formal content.\n\nOutput format: Return the final content with citations added, plus a verification_log array with: {claim, status (verified/unverified/corrected/removed), source_url, source_date, notes}."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Content Brief"}, "position": {"x": 0, "y": 100}},
+      {"id": "writer", "type": "agent", "data": {"role": "writer", "model": "any"}, "position": {"x": 200, "y": 100}},
+      {"id": "editor", "type": "agent", "data": {"role": "editor", "model": "any"}, "position": {"x": 400, "y": 100}},
+      {"id": "fact-checker", "type": "agent", "data": {"role": "fact-checker", "model": "any"}, "position": {"x": 600, "y": 100}},
+      {"id": "end", "type": "end", "data": {"label": "Published Content"}, "position": {"x": 800, "y": 100}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "writer"},
+      {"id": "e2", "source": "writer", "target": "editor"},
+      {"id": "e3", "source": "editor", "target": "fact-checker"},
+      {"id": "e4", "source": "fact-checker", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.50,
+    "timeout": 400,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Write a technical blog post about vector databases for AI applications, targeting senior developers, 1500 words",
+      "expectedOutput": "Publication-ready blog post: 'Why Vector Databases Are the Backbone of Modern AI Applications' — 1,487 words, 6 sections, 8 inline citations, Flesch-Kincaid grade 11, SEO-optimized title and meta description. Fact-check log shows 12/12 claims verified."
+    },
+    {
+      "input": "Create a LinkedIn thought leadership piece about AI agent reliability, 800 words, authoritative tone",
+      "expectedOutput": "Polished LinkedIn article: 'The Reliability Problem Nobody Talks About in AI Agents' — 812 words, hook with industry statistic, 3 key insights, CTA to comment. 5 citations added, 1 outdated stat corrected (2024 data replaced with 2026 update)."
+    }
+  ]
+}

@@ -1,126 +1,90 @@
-# Q-CLAW Registry
+# Qualixar OS — Official Plugin & Skill Registry
 
-**Global skill, plugin & tool registry for Q-CLAW Agent OS.**
-
-Browse capabilities from your Q-CLAW dashboard. Install with one click. Your agents get new powers instantly.
+The official registry for [Qualixar OS](https://github.com/qualixar/qualixar-os) plugins and skills.
 
 ## What's Here
 
-This repository is the **universal catalog** of agent skills, tools, plugins, and topologies for Q-CLAW. Every entry in `registry.json` is browsable from the Marketplace tab in the Q-CLAW dashboard.
-
-| Type | Count | Description |
-|------|-------|-------------|
-| **Agents** | 4 | Pre-configured agent roles (researcher, coder, analyst, support) |
-| **Skills** | 4 | Prompt-based capabilities (summarize, translate, code review, reports) |
-| **Tools** | 5 | Executable tool wrappers (web search, web crawl, file I/O, shell) |
-| **Topologies** | 5 | Multi-agent execution patterns (sequential, parallel, debate, review, hierarchical) |
+- **10 Official Plugins** — Production-ready tools for web search, GitHub, file operations, code execution, databases, web crawling, Slack, email, image generation, and API connectivity.
+- **15 Official Skills** — Pre-built agent team workflows for code review, research, data analysis, content writing, security auditing, and more.
 
 ## For Users
 
-**You don't need to interact with this repo directly.**
+Qualixar OS automatically fetches this registry. Browse and install from the **Marketplace** tab in the dashboard:
 
-1. Open your Q-CLAW dashboard
-2. Go to the **Marketplace** tab
-3. Search or browse by category
-4. Click **Install** on any skill
-5. Your agents can use it immediately — Forge auto-selects tools
+```bash
+# Start Qualixar OS
+npx qualixar-os
 
-## For Developers — Publishing a Skill
+# Open dashboard → Marketplace tab → Browse & Install
+```
 
-Want to add your own skill to the registry? Here's how:
+Or via CLI:
 
-### 1. Create a `skill.json` manifest
+```bash
+qos marketplace search "code review"
+qos marketplace install code-review-pipeline
+```
+
+## For Plugin Developers
+
+Want to publish your own plugin? See the [Plugin Development Guide](https://qualixar.com/docs/guides/publishing-skills.md).
+
+### Plugin Manifest Format
+
+Create a `skill.json` in your package root:
 
 ```json
 {
-  "name": "@yourname/my-skill",
+  "name": "@yourorg/your-plugin",
   "version": "1.0.0",
-  "description": "What your skill does (max 200 chars)",
-  "author": { "name": "Your Name" },
+  "description": "What your plugin does",
+  "author": { "name": "Your Name", "url": "https://yoursite.com" },
   "license": "MIT",
-  "category": "code-dev",
-  "tags": ["my-tag"],
+  "category": "web-data",
+  "tags": ["search", "web"],
   "tools": [
     {
-      "name": "my_tool",
-      "description": "What this tool does",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "input": { "type": "string" }
-        },
-        "required": ["input"]
-      }
+      "name": "your_tool",
+      "description": "What the tool does",
+      "inputSchema": { "type": "object", "properties": {} }
     }
   ],
   "transport": {
     "type": "stdio",
     "command": "npx",
-    "args": ["-y", "@yourname/my-skill"]
+    "args": ["-y", "@yourorg/your-plugin"]
   }
 }
 ```
 
-### 2. Add an entry to `registry.json`
+### Submission Process
 
-Fork this repo, add your entry to the `plugins` array in `registry.json`:
+1. Fork this repository
+2. Add your plugin to `plugins/<your-plugin-id>/skill.json`
+3. Add an entry to `registry.json`
+4. Submit a pull request
+5. Official review within 48 hours
 
-```json
-{
-  "id": "my-skill",
-  "name": "my-skill",
-  "author": "yourname",
-  "description": "What your skill does",
-  "version": "1.0.0",
-  "types": ["tool"],
-  "category": "code-dev",
-  "tags": ["my-tag"],
-  "tools": ["my_tool"],
-  "verified": false,
-  "stars": 0,
-  "installs": 0,
-  "updatedAt": "2026-04-05T00:00:00Z",
-  "tarballUrl": "https://registry.npmjs.org/@yourname/my-skill/-/my-skill-1.0.0.tgz",
-  "sha256": "your-tarball-sha256",
-  "tier": "community"
-}
+## Registry Structure
+
 ```
-
-### 3. Submit a Pull Request
-
-Open a PR to this repo. We'll review the manifest, check security, and merge.
-
-Once merged, your skill appears in every Q-CLAW dashboard worldwide.
-
-## Categories
-
-| Category | ID | Description |
-|----------|----|-------------|
-| Web & Data | `web-data` | Search, crawl, scrape, RSS, API connectors |
-| Code & Dev | `code-dev` | GitHub, code execution, linter, test runner |
-| Communication | `communication` | Slack, email, Discord, webhook |
-| Knowledge | `knowledge` | Vector search, document reader, DB query, RAG |
-| Creative | `creative` | Image gen, video gen, TTS, diagrams |
-| Enterprise | `enterprise` | CRM, project mgmt, analytics, cloud |
-
-## Schema
-
-See [`skill-manifest-schema.json`](./skill-manifest-schema.json) for the full JSON Schema.
-
-## Security
-
-All community submissions are reviewed before merge. We check for:
-- No embedded secrets or API keys
-- No malicious shell commands
-- Valid transport configuration
-- Accurate tool descriptions
-
-Built-in and verified skills are maintained by the Qualixar team.
+qos-registry/
+  registry.json          # Master index (fetched by Qualixar OS)
+  server.json            # MCP registry metadata
+  plugins/               # Plugin manifests
+    web-search/skill.json
+    github-tools/skill.json
+    ...
+  skills/                # Skill workflow templates
+    code-review-pipeline.json
+    research-team.json
+    ...
+  LICENSE
+  README.md
+```
 
 ## License
 
-MIT
+Elastic License 2.0
 
----
-
-Part of the [Qualixar](https://github.com/qualixar) ecosystem — AI Agent Reliability Engineering.
+Copyright (c) 2026 Varun Pratap Bhardwaj

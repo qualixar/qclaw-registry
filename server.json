@@ -1,0 +1,59 @@
+{
+  "$schema": "https://registry.modelcontextprotocol.io/schemas/server.json",
+  "name": "qualixar-os",
+  "description": "The Universal OS for AI Agents — orchestrate multi-agent teams with 12 topologies, auto-design via Forge AI, cost-quality-latency routing, and a 24-tab production dashboard.",
+  "version": "2.1.0",
+  "author": "Varun Pratap Bhardwaj",
+  "license": "Elastic-2.0",
+  "homepage": "https://qualixar.com",
+  "repository": "https://github.com/qualixar/qualixar-os",
+  "keywords": [
+    "ai-agents",
+    "multi-agent",
+    "orchestration",
+    "mcp",
+    "a2a",
+    "agent-os",
+    "forge",
+    "topologies",
+    "cost-routing",
+    "dashboard"
+  ],
+  "packages": {
+    "npm": {
+      "name": "qualixar-os",
+      "command": "npx",
+      "args": ["-y", "qualixar-os", "--mcp"]
+    }
+  },
+  "tools": [
+    {
+      "name": "qos_task_run",
+      "description": "Run a task through Qualixar OS with automatic agent team design"
+    },
+    {
+      "name": "qos_forge_design",
+      "description": "Design an optimal agent team from a natural language prompt"
+    },
+    {
+      "name": "qos_marketplace_search",
+      "description": "Search the skill and plugin marketplace"
+    },
+    {
+      "name": "qos_marketplace_install",
+      "description": "Install a skill or plugin from the marketplace"
+    },
+    {
+      "name": "qos_cost_summary",
+      "description": "Get cost breakdown by model, agent, and category"
+    },
+    {
+      "name": "qos_agent_list",
+      "description": "List all running and completed agents"
+    },
+    {
+      "name": "qos_workflow_create",
+      "description": "Create and run a workflow from a template"
+    }
+  ]
+}

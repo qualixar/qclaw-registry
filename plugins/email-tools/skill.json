@@ -1,0 +1,176 @@
+{
+  "name": "@qualixar/email-tools",
+  "version": "1.0.0",
+  "description": "Send, read, and search email — give your agents the ability to communicate over SMTP and IMAP protocols.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "communication",
+  "tags": ["email", "smtp", "imap", "communication", "send", "inbox"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "email_send",
+      "description": "Send an email via SMTP with support for HTML body, plain text, CC/BCC, and file attachments.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Recipient email addresses"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line"
+          },
+          "body": {
+            "type": "string",
+            "description": "Email body (plain text or HTML)"
+          },
+          "html": {
+            "type": "boolean",
+            "description": "Treat body as HTML",
+            "default": false
+          },
+          "cc": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "CC recipients"
+          },
+          "bcc": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "BCC recipients"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "filename": { "type": "string" },
+                "path": { "type": "string" }
+              },
+              "required": ["filename", "path"]
+            },
+            "description": "File attachments"
+          },
+          "replyTo": {
+            "type": "string",
+            "description": "Reply-To email address"
+          }
+        },
+        "required": ["to", "subject", "body"]
+      }
+    },
+    {
+      "name": "email_read_inbox",
+      "description": "Read emails from an IMAP inbox with filtering by folder, sender, date range, and read/unread status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "IMAP folder to read from",
+            "default": "INBOX"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum emails to fetch",
+            "default": 20
+          },
+          "unseen": {
+            "type": "boolean",
+            "description": "Only fetch unread messages",
+            "default": false
+          },
+          "from": {
+            "type": "string",
+            "description": "Filter by sender email address"
+          },
+          "since": {
+            "type": "string",
+            "description": "Only fetch emails after this ISO date (e.g., '2026-04-01')"
+          },
+          "includeBody": {
+            "type": "boolean",
+            "description": "Include full email body in results",
+            "default": true
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "email_search",
+      "description": "Search emails across folders using IMAP search criteria with subject, body, and date filters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query string"
+          },
+          "folder": {
+            "type": "string",
+            "description": "IMAP folder to search in",
+            "default": "INBOX"
+          },
+          "searchIn": {
+            "type": "string",
+            "enum": ["subject", "body", "from", "all"],
+            "description": "Where to search for the query",
+            "default": "all"
+          },
+          "since": {
+            "type": "string",
+            "description": "Only search emails after this ISO date"
+          },
+          "before": {
+            "type": "string",
+            "description": "Only search emails before this ISO date"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Maximum results to return",
+            "default": 20
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/email-tools"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {
+    "env": {
+      "SMTP_HOST": {
+        "description": "SMTP server hostname (e.g., smtp.gmail.com)",
+        "required": true
+      },
+      "SMTP_PORT": {
+        "description": "SMTP port (465 for SSL, 587 for TLS)",
+        "required": true
+      },
+      "SMTP_USER": {
+        "description": "SMTP authentication username",
+        "required": true
+      },
+      "SMTP_PASS": {
+        "description": "SMTP authentication password or app password",
+        "required": true
+      },
+      "IMAP_HOST": {
+        "description": "IMAP server hostname (e.g., imap.gmail.com)",
+        "required": false
+      },
+      "IMAP_PORT": {
+        "description": "IMAP port (993 for SSL)",
+        "required": false
+      }
+    }
+  }
+}

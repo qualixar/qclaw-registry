@@ -1,0 +1,118 @@
+{
+  "name": "@qualixar/code-executor",
+  "version": "1.0.0",
+  "description": "Execute Python, JavaScript, and shell commands in a sandboxed environment with timeout and output capture.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "code-dev",
+  "tags": ["code", "execute", "python", "javascript", "shell", "sandbox", "runtime"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "execute_python",
+      "description": "Execute Python code in an isolated subprocess with timeout, stdin support, and captured stdout/stderr.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Python code to execute"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Execution timeout in milliseconds",
+            "default": 30000
+          },
+          "stdin": {
+            "type": "string",
+            "description": "Standard input to pipe to the process"
+          },
+          "pythonPath": {
+            "type": "string",
+            "description": "Path to Python interpreter",
+            "default": "python3"
+          },
+          "env": {
+            "type": "object",
+            "description": "Additional environment variables for the process",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["code"]
+      }
+    },
+    {
+      "name": "execute_javascript",
+      "description": "Execute JavaScript/TypeScript code using Node.js with timeout and module support.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "JavaScript or TypeScript code to execute"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Execution timeout in milliseconds",
+            "default": 30000
+          },
+          "stdin": {
+            "type": "string",
+            "description": "Standard input to pipe to the process"
+          },
+          "typescript": {
+            "type": "boolean",
+            "description": "Treat code as TypeScript (uses tsx)",
+            "default": false
+          },
+          "env": {
+            "type": "object",
+            "description": "Additional environment variables",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["code"]
+      }
+    },
+    {
+      "name": "execute_shell",
+      "description": "Execute a shell command with timeout, working directory control, and captured output.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "Shell command to execute"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Execution timeout in milliseconds",
+            "default": 30000
+          },
+          "cwd": {
+            "type": "string",
+            "description": "Working directory for the command"
+          },
+          "shell": {
+            "type": "string",
+            "description": "Shell to use (e.g., '/bin/bash', '/bin/zsh')",
+            "default": "/bin/bash"
+          },
+          "env": {
+            "type": "object",
+            "description": "Additional environment variables",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["command"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/code-executor"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {}
+}

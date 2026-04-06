@@ -1,0 +1,141 @@
+{
+  "name": "@qualixar/github-tools",
+  "version": "1.0.0",
+  "description": "Full GitHub operations — search code, create issues, list PRs, and read files directly from any repository.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "code-dev",
+  "tags": ["github", "git", "code", "issues", "pull-requests", "devops"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "github_search_code",
+      "description": "Search code across GitHub repositories using GitHub's code search syntax with language and repo filters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Code search query (supports GitHub search syntax)"
+          },
+          "language": {
+            "type": "string",
+            "description": "Filter by programming language (e.g., 'typescript', 'python')"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Filter to a specific repo (e.g., 'owner/repo')"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum results to return (1-100)",
+            "default": 20
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "github_create_issue",
+      "description": "Create a new issue in a GitHub repository with title, body, labels, and assignees.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Repository in 'owner/repo' format"
+          },
+          "title": {
+            "type": "string",
+            "description": "Issue title"
+          },
+          "body": {
+            "type": "string",
+            "description": "Issue body in Markdown format"
+          },
+          "labels": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Labels to apply to the issue"
+          },
+          "assignees": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "GitHub usernames to assign"
+          }
+        },
+        "required": ["repo", "title"]
+      }
+    },
+    {
+      "name": "github_list_prs",
+      "description": "List pull requests for a repository with state, author, and label filtering.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Repository in 'owner/repo' format"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["open", "closed", "all"],
+            "description": "PR state filter",
+            "default": "open"
+          },
+          "author": {
+            "type": "string",
+            "description": "Filter by PR author username"
+          },
+          "label": {
+            "type": "string",
+            "description": "Filter by label"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum PRs to return (1-100)",
+            "default": 20
+          }
+        },
+        "required": ["repo"]
+      }
+    },
+    {
+      "name": "github_get_file",
+      "description": "Read the contents of a file from a GitHub repository at a specific ref (branch, tag, or commit).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Repository in 'owner/repo' format"
+          },
+          "path": {
+            "type": "string",
+            "description": "File path within the repository"
+          },
+          "ref": {
+            "type": "string",
+            "description": "Git ref (branch, tag, or commit SHA)",
+            "default": "main"
+          }
+        },
+        "required": ["repo", "path"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/github-tools"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {
+    "env": {
+      "GITHUB_TOKEN": {
+        "description": "GitHub personal access token with repo scope",
+        "required": true
+      }
+    }
+  }
+}

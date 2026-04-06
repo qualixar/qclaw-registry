@@ -1,0 +1,113 @@
+{
+  "name": "@qualixar/web-search",
+  "version": "1.0.0",
+  "description": "Search the web, news, and images via DuckDuckGo — zero API keys, zero cost, instant results for any agent.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "web-data",
+  "tags": ["web", "search", "duckduckgo", "news", "images", "free"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "web_search",
+      "description": "Search the web using DuckDuckGo and return ranked results with titles, URLs, and snippets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query string"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum number of results to return (1-50)",
+            "default": 10
+          },
+          "region": {
+            "type": "string",
+            "description": "Region code for localized results (e.g., 'us-en', 'uk-en', 'de-de')",
+            "default": "wt-wt"
+          },
+          "safeSearch": {
+            "type": "string",
+            "enum": ["strict", "moderate", "off"],
+            "description": "Safe search filtering level",
+            "default": "moderate"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "news_search",
+      "description": "Search recent news articles with optional time range filtering and source preferences.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The news search query"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum number of news articles to return (1-30)",
+            "default": 10
+          },
+          "timeRange": {
+            "type": "string",
+            "enum": ["day", "week", "month"],
+            "description": "Filter results by recency",
+            "default": "week"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region code for localized news",
+            "default": "wt-wt"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "image_search",
+      "description": "Search for images and return URLs, dimensions, and source pages.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The image search query"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum number of image results (1-30)",
+            "default": 10
+          },
+          "size": {
+            "type": "string",
+            "enum": ["small", "medium", "large", "wallpaper"],
+            "description": "Filter by image size"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["photo", "clipart", "gif", "transparent"],
+            "description": "Filter by image type"
+          },
+          "safeSearch": {
+            "type": "string",
+            "enum": ["strict", "moderate", "off"],
+            "default": "strict"
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/web-search"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {}
+}

@@ -1,0 +1,67 @@
+{
+  "id": "research-team",
+  "name": "Research Team",
+  "version": "1.0.0",
+  "type": "blueprint",
+  "category": "knowledge",
+  "description": "Three-agent sequential research pipeline that gathers information, synthesizes findings into patterns, and produces a structured report with citations.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["research", "analysis", "report", "citations", "knowledge-synthesis"],
+  "topology": "sequential",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "researcher",
+      "description": "Gathers comprehensive information from web sources, documents, and databases on the given topic",
+      "model": "any",
+      "tools": ["web_search", "crawl_url", "file_read"],
+      "systemPrompt": "You are a meticulous research analyst tasked with gathering comprehensive information on a given topic.\n\nYour responsibilities:\n1. Break the research question into 3-5 sub-questions that cover the full scope of the topic.\n2. For each sub-question, search multiple sources — academic papers, industry reports, news articles, official documentation, and expert opinions.\n3. For every piece of information collected, record the source URL, author, date, and a reliability rating (high/medium/low based on source authority).\n4. Identify conflicting information across sources and flag it explicitly — do not silently pick one version.\n5. Gather quantitative data where available — statistics, benchmarks, market sizes, growth rates. Always note the date of the data.\n6. Document gaps — what questions remain unanswered? What data was expected but not found?\n\nOutput format: Return a structured JSON object with: topic, sub_questions (array of {question, findings[], sources[], gaps}), raw_data_points (array of {claim, source, date, reliability}), and unresolved_questions."
+    },
+    {
+      "role": "analyst",
+      "description": "Synthesizes raw research into patterns, insights, trends, and actionable findings",
+      "model": "any",
+      "tools": ["execute_python"],
+      "systemPrompt": "You are a senior research analyst who transforms raw data into actionable insights.\n\nYour responsibilities:\n1. Review all gathered research data and identify the top 3-5 key themes or patterns that emerge across multiple sources.\n2. For each theme, assess the strength of evidence — how many independent sources support it? Are the sources high-quality? Is there contradictory evidence?\n3. Identify trends — what is changing over time? What direction are things moving? Quantify trends with data points where possible.\n4. Perform comparative analysis — how do different approaches, products, or strategies compare? Build comparison matrices.\n5. Assess risks and uncertainties — what assumptions underlie the findings? What could invalidate the conclusions?\n6. Generate 3-5 specific, actionable recommendations based on the analysis. Each recommendation should cite the supporting evidence.\n\nOutput format: Return a structured JSON object with: themes (array of {name, evidence_strength, supporting_sources[], description}), trends (array of {direction, magnitude, timeframe, data_points[]}), comparisons (array of matrices), risks[], and recommendations (array of {action, rationale, evidence[], priority})."
+    },
+    {
+      "role": "writer",
+      "description": "Produces a polished, structured research report with executive summary, findings, and properly formatted citations",
+      "model": "any",
+      "tools": ["file_write"],
+      "systemPrompt": "You are a professional technical writer who produces clear, authoritative research reports.\n\nYour responsibilities:\n1. Structure the report with: Executive Summary (1 paragraph, key findings and recommendations), Introduction (context and scope), Methodology (sources and approach), Key Findings (organized by theme), Analysis (trends, comparisons, implications), Recommendations (prioritized, actionable), and References.\n2. Write in clear, professional prose — no jargon without definition, no passive voice where active is clearer, no filler words.\n3. Every factual claim must have an inline citation — use numbered references [1], [2], etc. that map to the References section.\n4. Include data visualizations where appropriate — describe tables and charts that should accompany the text.\n5. The Executive Summary must be readable by a C-level executive in 2 minutes — lead with the most important finding and recommendation.\n6. Add a Limitations section that honestly describes gaps in the research and potential biases.\n\nOutput format: Return a complete Markdown document with all sections, inline citations, and a numbered References section at the end."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Research Question"}, "position": {"x": 0, "y": 100}},
+      {"id": "researcher", "type": "agent", "data": {"role": "researcher", "model": "any"}, "position": {"x": 200, "y": 100}},
+      {"id": "analyst", "type": "agent", "data": {"role": "analyst", "model": "any"}, "position": {"x": 400, "y": 100}},
+      {"id": "writer", "type": "agent", "data": {"role": "writer", "model": "any"}, "position": {"x": 600, "y": 100}},
+      {"id": "end", "type": "end", "data": {"label": "Research Report"}, "position": {"x": 800, "y": 100}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "researcher"},
+      {"id": "e2", "source": "researcher", "target": "analyst"},
+      {"id": "e3", "source": "analyst", "target": "writer"},
+      {"id": "e4", "source": "writer", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.75,
+    "timeout": 600,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Research the current state of WebAssembly adoption in enterprise backend systems",
+      "expectedOutput": "A 3000-word report covering: adoption rates (12% of Fortune 500 using WASM in production), key use cases (edge computing, plugin systems, serverless), comparison of runtimes (Wasmtime vs Wasmer vs WasmEdge), 5 recommendations for enterprise adoption strategy, 15+ citations."
+    },
+    {
+      "input": "What are the emerging alternatives to Kubernetes for container orchestration in 2026?",
+      "expectedOutput": "Structured report analyzing Nomad, Podman, Docker Swarm alternatives, serverless container platforms, and WASM-based orchestrators. Includes feature comparison matrix, adoption trends, and 3 prioritized recommendations based on org size."
+    }
+  ]
+}

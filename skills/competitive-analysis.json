@@ -1,0 +1,70 @@
+{
+  "id": "competitive-analysis",
+  "name": "Competitive Analysis",
+  "version": "1.0.0",
+  "type": "blueprint",
+  "category": "enterprise",
+  "description": "Three-agent parallel intelligence team that researches competitors, performs SWOT analysis with feature comparison, and generates strategic positioning recommendations.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["competitive-intelligence", "SWOT", "market-analysis", "strategy", "positioning"],
+  "topology": "parallel",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "researcher",
+      "description": "Gathers comprehensive competitor data including pricing, features, reviews, funding, and market positioning",
+      "model": "any",
+      "tools": ["web_search", "crawl_url"],
+      "systemPrompt": "You are a competitive intelligence researcher gathering comprehensive data on target competitors.\n\nYour responsibilities:\n1. Company profile — company size (employees, revenue if public), founding date, funding history (rounds, investors, total raised), headquarters, key leadership, and recent news.\n2. Product analysis — core features list, pricing tiers (free, pro, enterprise with exact prices where available), integration ecosystem, supported platforms, and recent feature launches.\n3. Market presence — customer count or user base (estimates acceptable if noted), notable customers, industry verticals served, geographic presence, and market share estimates.\n4. Customer sentiment — aggregate review scores from G2, Capterra, TrustRadius, ProductHunt. Extract top 3 praised features and top 3 complaints. Note review volume and recency.\n5. Technical assessment — technology stack (if discoverable), API availability, documentation quality, open-source components, and known technical limitations.\n6. Growth signals — hiring patterns (what roles are they hiring for?), recent partnerships, patent filings, conference presence, and content marketing activity.\n\nOutput format: Return JSON with: companies (array of {name, profile, product, pricing_tiers[], market_presence, reviews_summary, tech_assessment, growth_signals}), data_sources[], and data_freshness_notes."
+    },
+    {
+      "role": "analyst",
+      "description": "Performs SWOT analysis, feature comparison matrices, and identifies market gaps and opportunities",
+      "model": "any",
+      "tools": ["execute_python"],
+      "systemPrompt": "You are a strategic analyst who transforms competitive data into actionable intelligence.\n\nYour responsibilities:\n1. SWOT analysis — for each competitor AND for your own product: Strengths (what they do better than everyone), Weaknesses (where they fall short), Opportunities (market gaps they could exploit), Threats (external forces that could harm them). Be specific — not 'good UX' but 'onboarding flow completes in 3 steps vs. industry average of 7'.\n2. Feature comparison matrix — create a comprehensive matrix: rows = features/capabilities, columns = competitors + your product. Rate each as: leading (best in class), competitive (on par), lagging (behind), or absent. Weight features by customer importance.\n3. Pricing analysis — compare value-per-dollar across tiers. Identify pricing advantages and vulnerabilities. Note any pricing trends (race to bottom, premium positioning).\n4. Market positioning map — plot competitors on a 2D grid: x-axis = enterprise vs. SMB focus, y-axis = feature depth vs. ease of use. Identify crowded and whitespace areas.\n5. Trend analysis — what direction is each competitor moving? Are they moving upmarket or downmarket? Expanding features or simplifying? Indicate trajectory.\n6. Gap analysis — where is there unmet customer demand that no competitor serves well?\n\nOutput format: Return JSON with: swot (per competitor), feature_matrix (table), pricing_analysis, positioning_map (coordinates per competitor), trends[], and gaps (array of {opportunity, evidence, potential_value})."
+    },
+    {
+      "role": "strategist",
+      "description": "Generates strategic recommendations for differentiation, positioning, and competitive response",
+      "model": "any",
+      "tools": ["file_write"],
+      "systemPrompt": "You are a product strategist who translates competitive analysis into winning strategies.\n\nYour responsibilities:\n1. Positioning recommendation — define the ideal market position based on the competitive landscape. Craft a positioning statement: 'For [target customer] who [need], [product] is the [category] that [key differentiator] unlike [primary competitor] which [their limitation].'\n2. Differentiation strategy — identify 3-5 specific areas where your product should invest to create defensible competitive advantages. For each: the feature/capability, why it matters to customers, which competitors are weak here, and estimated effort to build.\n3. Competitive response playbook — for each major competitor: key selling points to counter in sales conversations, feature gaps to highlight, customer objections to address, and win/loss analysis recommendations.\n4. Pricing strategy — recommend pricing position (premium, value, freemium) based on competitive pricing landscape and your product's strengths. Suggest specific price points with justification.\n5. Go-to-market recommendations — which customer segments to target first (path of least competitive resistance), which channels to prioritize, and which messaging themes resonate strongest.\n6. Risk mitigation — what competitive moves could threaten your position? How should you prepare? What early warning signals should you monitor?\n\nOutput format: Return a Markdown strategy document with: executive_summary, positioning_statement, differentiation_priorities (ranked), competitive_playbook (per competitor), pricing_recommendation, gtm_recommendations, and risk_mitigation_plan."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Competitors List"}, "position": {"x": 0, "y": 150}},
+      {"id": "researcher", "type": "agent", "data": {"role": "researcher", "model": "any"}, "position": {"x": 250, "y": 0}},
+      {"id": "analyst", "type": "agent", "data": {"role": "analyst", "model": "any"}, "position": {"x": 250, "y": 150}},
+      {"id": "merge", "type": "merge", "data": {"label": "Merge Intelligence"}, "position": {"x": 500, "y": 75}},
+      {"id": "strategist", "type": "agent", "data": {"role": "strategist", "model": "any"}, "position": {"x": 700, "y": 75}},
+      {"id": "end", "type": "end", "data": {"label": "Strategy Report"}, "position": {"x": 900, "y": 75}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "researcher"},
+      {"id": "e2", "source": "start", "target": "analyst"},
+      {"id": "e3", "source": "researcher", "target": "merge"},
+      {"id": "e4", "source": "analyst", "target": "merge"},
+      {"id": "e5", "source": "merge", "target": "strategist"},
+      {"id": "e6", "source": "strategist", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 1.00,
+    "timeout": 600,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Analyze our competitors in the AI agent orchestration space: LangGraph, CrewAI, AutoGen, and Semantic Kernel",
+      "expectedOutput": "Strategy report: Positioning as 'enterprise-grade agent OS' (whitespace between developer-focused LangGraph and academic AutoGen). Feature matrix across 25 capabilities. SWOT per competitor. Top 3 differentiation bets: built-in observability, compliance-first design, unified transport protocol. Pricing: premium tier at $99/seat vs. open-source competitors (monetize via enterprise features)."
+    },
+    {
+      "input": "Compare our SaaS billing platform against Stripe Billing, Chargebee, and Recurly for the mid-market segment",
+      "expectedOutput": "Report: Mid-market gap identified (Stripe too developer-heavy, Chargebee too enterprise). Positioning: 'finance-team-first billing'. Feature matrix: leading in revenue recognition, lagging in payment gateway breadth. Competitive playbook with objection handlers per competitor. Pricing: $499/month (undercut Chargebee's $599, premium over Stripe's usage-based)."
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "name": "@qualixar/api-connector",
+  "version": "1.0.0",
+  "description": "Call any REST API with authentication, retry logic, and rate limiting — the universal enterprise integration bridge.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "enterprise",
+  "tags": ["api", "rest", "http", "enterprise", "integration", "auth", "retry"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "api_call",
+      "description": "Make a single HTTP request to any REST API with full control over method, headers, body, and authentication.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Full URL for the API request"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+            "description": "HTTP method",
+            "default": "GET"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Request headers",
+            "additionalProperties": { "type": "string" }
+          },
+          "body": {
+            "description": "Request body (auto-serialized to JSON if object)"
+          },
+          "auth": {
+            "type": "object",
+            "description": "Authentication configuration",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["bearer", "basic", "api-key", "oauth2"],
+                "description": "Authentication type"
+              },
+              "token": {
+                "type": "string",
+                "description": "Token value (bearer), password (basic), or API key"
+              },
+              "username": {
+                "type": "string",
+                "description": "Username for basic auth"
+              },
+              "headerName": {
+                "type": "string",
+                "description": "Header name for API key auth",
+                "default": "X-API-Key"
+              }
+            },
+            "required": ["type"]
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Request timeout in milliseconds",
+            "default": 30000
+          },
+          "retries": {
+            "type": "number",
+            "description": "Number of retry attempts on failure (with exponential backoff)",
+            "default": 0
+          },
+          "followRedirects": {
+            "type": "boolean",
+            "description": "Follow HTTP redirects",
+            "default": true
+          },
+          "validateStatus": {
+            "type": "boolean",
+            "description": "Throw on non-2xx status codes",
+            "default": true
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "api_batch",
+      "description": "Execute multiple API calls in parallel or sequence with shared auth and configurable concurrency.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "Unique request identifier" },
+                "url": { "type": "string" },
+                "method": { "type": "string", "default": "GET" },
+                "headers": { "type": "object", "additionalProperties": { "type": "string" } },
+                "body": {}
+              },
+              "required": ["id", "url"]
+            },
+            "description": "Array of API requests to execute"
+          },
+          "concurrency": {
+            "type": "number",
+            "description": "Maximum concurrent requests",
+            "default": 5
+          },
+          "auth": {
+            "type": "object",
+            "description": "Shared authentication applied to all requests",
+            "properties": {
+              "type": { "type": "string", "enum": ["bearer", "basic", "api-key"] },
+              "token": { "type": "string" }
+            }
+          },
+          "stopOnError": {
+            "type": "boolean",
+            "description": "Stop batch execution on first error",
+            "default": false
+          },
+          "delayMs": {
+            "type": "number",
+            "description": "Delay between requests in milliseconds (rate limiting)",
+            "default": 0
+          }
+        },
+        "required": ["requests"]
+      }
+    },
+    {
+      "name": "api_health_check",
+      "description": "Check the health of one or more API endpoints and return status, latency, and response validation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "description": "Endpoint display name" },
+                "url": { "type": "string", "description": "URL to health check" },
+                "method": { "type": "string", "default": "GET" },
+                "expectedStatus": { "type": "number", "description": "Expected HTTP status code", "default": 200 },
+                "expectedBodyContains": { "type": "string", "description": "String that must appear in the response body" }
+              },
+              "required": ["name", "url"]
+            },
+            "description": "Endpoints to health check"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout per endpoint in milliseconds",
+            "default": 10000
+          },
+          "auth": {
+            "type": "object",
+            "description": "Shared authentication for all endpoints",
+            "properties": {
+              "type": { "type": "string", "enum": ["bearer", "basic", "api-key"] },
+              "token": { "type": "string" }
+            }
+          }
+        },
+        "required": ["endpoints"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/api-connector"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {}
+}

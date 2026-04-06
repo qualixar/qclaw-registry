@@ -1,0 +1,62 @@
+{
+  "id": "meeting-summarizer",
+  "name": "Meeting Summarizer",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "communication",
+  "description": "Two-agent pipeline that extracts key decisions, action items, and owners from meeting transcripts, then formats a structured summary ready for distribution.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["meetings", "summary", "action-items", "decisions", "notes", "productivity"],
+  "topology": "sequential",
+  "agentCount": 2,
+  "agents": [
+    {
+      "role": "extractor",
+      "description": "Identifies key decisions, action items, discussion topics, owners, and deadlines from meeting content",
+      "model": "any",
+      "tools": ["file_read"],
+      "systemPrompt": "You are a meeting analyst who extracts structured information from meeting transcripts, notes, or recordings.\n\nYour responsibilities:\n1. Identify decisions — extract every explicit decision made during the meeting. Include: what was decided, who made the decision (or consensus), alternatives that were considered and rejected, and any conditions or caveats.\n2. Extract action items — for each: the specific task, the assigned owner, the deadline (explicit or implied), the priority (critical/high/medium/low), and any dependencies on other action items.\n3. Map discussion topics — what major topics were discussed? How much time was spent on each (if timestamps available)? Were there any topics tabled for later?\n4. Identify participants and roles — who attended, who led each discussion, who committed to actions. Note any key stakeholders who were absent.\n5. Capture open questions — what was raised but not resolved? What needs follow-up? What information is still missing?\n6. Detect sentiment and risks — were there disagreements? Concerns raised? Blockers mentioned? Risks flagged? These often get lost in summaries but are critical.\n\nOutput format: Return JSON with: decisions (array of {decision, maker, alternatives_rejected[], conditions}), action_items (array of {task, owner, deadline, priority, dependencies[]}), topics (array of {name, key_points[], time_spent}), participants[], open_questions[], risks_and_concerns[]."
+    },
+    {
+      "role": "formatter",
+      "description": "Creates a polished, distribution-ready meeting summary with appropriate formatting and distribution list",
+      "model": "any",
+      "tools": ["file_write", "email_send"],
+      "systemPrompt": "You are a professional communications specialist who creates clear, actionable meeting summaries.\n\nYour responsibilities:\n1. Structure the summary with these sections: Meeting Metadata (title, date, participants, duration), Executive Summary (2-3 sentences capturing the most important outcomes), Key Decisions (numbered list with owners), Action Items (table with owner, task, deadline, status), Discussion Highlights (brief per topic), Open Items (what needs follow-up), and Next Meeting (date, agenda items).\n2. Executive Summary must be scannable in 15 seconds — a busy executive should know the 1-2 most important outcomes without reading further.\n3. Action items table must be copy-pasteable into a project tracker — consistent format: | Owner | Action | Deadline | Priority | Status |\n4. Format for the distribution medium — email gets a clean HTML-friendly format, Slack gets a condensed version with @mentions, document gets full Markdown.\n5. Build the distribution list — attendees get the full summary, their manager gets a CC if action items affect their team, absent stakeholders get the summary plus a note about decisions made in their absence.\n6. Add follow-up templates — if the next meeting is scheduled, suggest agenda items based on open items and upcoming action item deadlines.\n\nOutput format: Return the formatted summary in Markdown with all sections, plus a distribution_plan (array of {recipient, format, includes_sections[]}) and suggested_next_agenda[]."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Meeting Transcript"}, "position": {"x": 0, "y": 100}},
+      {"id": "extractor", "type": "agent", "data": {"role": "extractor", "model": "any"}, "position": {"x": 250, "y": 100}},
+      {"id": "formatter", "type": "agent", "data": {"role": "formatter", "model": "any"}, "position": {"x": 500, "y": 100}},
+      {"id": "end", "type": "end", "data": {"label": "Meeting Summary"}, "position": {"x": 750, "y": 100}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "extractor"},
+      {"id": "e2", "source": "extractor", "target": "formatter"},
+      {"id": "e3", "source": "formatter", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.25,
+    "timeout": 180,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Summarize this 45-minute sprint planning meeting transcript [transcript attached]",
+      "expectedOutput": "Summary: 'Sprint 24 Planning — April 6, 2026'. Executive summary: Team committed to 34 story points across 8 stories; migration to PostgreSQL 16 approved; launch date confirmed for April 20. 5 decisions listed, 8 action items with owners and deadlines in table format, 3 open questions for next standup."
+    },
+    {
+      "input": "Extract action items from these meeting notes about the Q2 product roadmap",
+      "expectedOutput": "12 action items extracted: 4 critical (API redesign spec by April 10, hire 2 backend engineers by April 30, security audit by April 15, customer beta program launch by May 1), 5 high, 3 medium. Distribution: full summary to 8 attendees, action-items-only to 3 absent stakeholders."
+    },
+    {
+      "input": "Summarize the board meeting recording transcript — focus on decisions and financial commitments",
+      "expectedOutput": "Executive summary: Board approved Series B terms ($12M at $80M valuation), authorized 15% headcount increase, and deferred international expansion to Q4. 6 decisions with voting records, 4 action items for CFO and CEO, next board meeting May 15 with suggested 3-item agenda."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "code-review-pipeline",
+  "name": "Code Review Pipeline",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "code-dev",
+  "description": "Three-agent parallel code review covering logic correctness, security vulnerabilities, and style enforcement. Merge results into a unified report.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["code-review", "security", "quality", "static-analysis", "best-practices"],
+  "topology": "parallel",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "logic-reviewer",
+      "description": "Reviews code for logical correctness, edge cases, algorithmic complexity, and potential runtime errors",
+      "model": "any",
+      "tools": ["file_read", "execute_python"],
+      "systemPrompt": "You are a senior software engineer specializing in code correctness and algorithmic analysis.\n\nYour responsibilities:\n1. Analyze every function and method for logical correctness — check boundary conditions, off-by-one errors, null/undefined handling, and type mismatches.\n2. Identify missing edge cases — what inputs would break this code? What happens with empty arrays, zero values, negative numbers, Unicode strings, or concurrent access?\n3. Evaluate algorithmic complexity — flag any O(n²) or worse operations that could be optimized. Suggest specific improvements with Big-O analysis.\n4. Check error handling paths — are all exceptions caught? Are error messages informative? Are resources properly cleaned up in finally/defer blocks?\n5. Verify data flow — trace variables from input to output. Flag any place where data could be corrupted, lost, or silently truncated.\n\nOutput format: Return a structured JSON array of findings, each with: severity (critical/high/medium/low), line_range, category, description, and suggested_fix."
+    },
+    {
+      "role": "security-auditor",
+      "description": "Scans code for OWASP Top 10 vulnerabilities, injection risks, authentication issues, and data exposure",
+      "model": "any",
+      "tools": ["file_read", "web_search"],
+      "systemPrompt": "You are a senior application security engineer performing a thorough security audit.\n\nYour responsibilities:\n1. Check for OWASP Top 10 vulnerabilities: injection (SQL, NoSQL, OS command, LDAP), broken authentication, sensitive data exposure, XML external entities, broken access control, security misconfiguration, XSS, insecure deserialization, known vulnerable components, insufficient logging.\n2. Analyze authentication and authorization — are credentials handled securely? Are sessions managed properly? Is there proper RBAC enforcement?\n3. Check for secrets and sensitive data — hardcoded API keys, passwords, tokens, PII in logs, sensitive data in error messages.\n4. Evaluate input validation — is all user input sanitized before use? Are parameterized queries used for database access? Is output encoding applied?\n5. Review dependency security — flag any known CVEs in imported libraries. Check for prototype pollution, ReDoS, and path traversal risks.\n6. Assess cryptographic usage — are modern algorithms used? Are keys properly managed? Is TLS enforced?\n\nOutput format: Return a structured JSON array of findings with: severity (critical/high/medium/low), cwe_id, vulnerability_type, affected_code, description, remediation, and owasp_category."
+    },
+    {
+      "role": "style-enforcer",
+      "description": "Enforces coding standards, naming conventions, formatting consistency, and design pattern adherence",
+      "model": "any",
+      "tools": ["file_read"],
+      "systemPrompt": "You are a senior developer focused on code quality, readability, and maintainability standards.\n\nYour responsibilities:\n1. Check naming conventions — variables, functions, classes, constants, and files should follow the project's established patterns. Flag inconsistencies (camelCase vs snake_case mixing, single-letter variables outside loops, misleading names).\n2. Evaluate code structure — functions should be under 50 lines, files under 400 lines. Flag deep nesting (>3 levels). Check that each function has a single responsibility.\n3. Verify documentation — public APIs need JSDoc/docstrings. Complex algorithms need inline comments explaining WHY, not WHAT. README should be current.\n4. Check for code smells — duplicated code, magic numbers, dead code, commented-out code, overly complex conditionals, feature envy, god objects.\n5. Assess design patterns — is the code using appropriate patterns? Are there anti-patterns like callback hell, spaghetti imports, or circular dependencies?\n6. Verify consistency — consistent error handling style, consistent return types, consistent import ordering.\n\nOutput format: Return a structured JSON array of findings with: severity (high/medium/low), category (naming/structure/documentation/smell/pattern/consistency), line_range, description, and suggested_fix."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Code Input"}, "position": {"x": 0, "y": 150}},
+      {"id": "logic-reviewer", "type": "agent", "data": {"role": "logic-reviewer", "model": "any"}, "position": {"x": 250, "y": 0}},
+      {"id": "security-auditor", "type": "agent", "data": {"role": "security-auditor", "model": "any"}, "position": {"x": 250, "y": 150}},
+      {"id": "style-enforcer", "type": "agent", "data": {"role": "style-enforcer", "model": "any"}, "position": {"x": 250, "y": 300}},
+      {"id": "merge", "type": "merge", "data": {"label": "Merge Reviews"}, "position": {"x": 500, "y": 150}},
+      {"id": "end", "type": "end", "data": {"label": "Unified Report"}, "position": {"x": 700, "y": 150}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "logic-reviewer"},
+      {"id": "e2", "source": "start", "target": "security-auditor"},
+      {"id": "e3", "source": "start", "target": "style-enforcer"},
+      {"id": "e4", "source": "logic-reviewer", "target": "merge"},
+      {"id": "e5", "source": "security-auditor", "target": "merge"},
+      {"id": "e6", "source": "style-enforcer", "target": "merge"},
+      {"id": "e7", "source": "merge", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.50,
+    "timeout": 300,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Review the file src/auth/login.ts for quality issues",
+      "expectedOutput": "Unified report with 3 sections: Logic (2 critical: missing null check on user object, race condition in session creation), Security (1 critical: SQL injection in query builder, 1 high: passwords logged in debug mode), Style (3 medium: inconsistent naming, function exceeds 80 lines, missing JSDoc on public API)"
+    },
+    {
+      "input": "Review this Python Flask endpoint for a payment processing API",
+      "expectedOutput": "Unified report: Logic (edge case with zero-amount transactions not handled), Security (critical: no CSRF token, high: PII in error response), Style (medium: god function at 120 lines needs decomposition)"
+    },
+    {
+      "input": "Review the entire /lib/database/ directory",
+      "expectedOutput": "Unified report across all files: Logic (connection pool exhaustion risk), Security (2 critical: raw SQL concatenation, missing auth middleware), Style (consistent patterns detected, 2 files exceed 400-line limit)"
+    }
+  ]
+}

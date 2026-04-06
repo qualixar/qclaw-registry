@@ -1,0 +1,104 @@
+{
+  "name": "@qualixar/database-query",
+  "version": "1.0.0",
+  "description": "Query SQLite and PostgreSQL databases — run SQL, inspect schemas, and list tables with zero boilerplate.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "knowledge",
+  "tags": ["database", "sql", "sqlite", "postgresql", "query", "schema"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "sql_query",
+      "description": "Execute a SQL query against a connected database and return results as JSON rows with column metadata.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "SQL query to execute (SELECT, INSERT, UPDATE, DELETE)"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database connection string or SQLite file path"
+          },
+          "params": {
+            "type": "array",
+            "items": {},
+            "description": "Parameterized query values (prevents SQL injection)"
+          },
+          "maxRows": {
+            "type": "number",
+            "description": "Maximum rows to return",
+            "default": 1000
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Query timeout in milliseconds",
+            "default": 30000
+          }
+        },
+        "required": ["query", "database"]
+      }
+    },
+    {
+      "name": "sql_schema",
+      "description": "Retrieve the full schema of a table including columns, types, constraints, and indexes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "string",
+            "description": "Table name to inspect"
+          },
+          "database": {
+            "type": "string",
+            "description": "Database connection string or SQLite file path"
+          },
+          "includeIndexes": {
+            "type": "boolean",
+            "description": "Include index definitions in the output",
+            "default": true
+          },
+          "includeForeignKeys": {
+            "type": "boolean",
+            "description": "Include foreign key relationships",
+            "default": true
+          }
+        },
+        "required": ["table", "database"]
+      }
+    },
+    {
+      "name": "sql_tables",
+      "description": "List all tables in a database with row counts, size estimates, and column summaries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "database": {
+            "type": "string",
+            "description": "Database connection string or SQLite file path"
+          },
+          "schema": {
+            "type": "string",
+            "description": "Schema name (PostgreSQL only)",
+            "default": "public"
+          },
+          "includeViews": {
+            "type": "boolean",
+            "description": "Include views in the listing",
+            "default": false
+          }
+        },
+        "required": ["database"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/database-query"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {}
+}

@@ -1,0 +1,142 @@
+{
+  "name": "@qualixar/web-crawler",
+  "version": "1.0.0",
+  "description": "Crawl URLs, extract text and links, and capture screenshots — turn any webpage into structured agent-ready data.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "web-data",
+  "tags": ["web", "crawler", "scraper", "extract", "screenshot", "html"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "crawl_url",
+      "description": "Fetch a URL and return its full HTML content, response headers, status code, and load timing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to crawl"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Custom request headers",
+            "additionalProperties": { "type": "string" }
+          },
+          "followRedirects": {
+            "type": "boolean",
+            "description": "Follow HTTP redirects",
+            "default": true
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Request timeout in milliseconds",
+            "default": 15000
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "Custom User-Agent header"
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "extract_text",
+      "description": "Extract clean text content from a URL, stripping HTML tags, scripts, and styles. Returns Markdown.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to extract text from"
+          },
+          "selector": {
+            "type": "string",
+            "description": "CSS selector to scope extraction (e.g., 'article', 'main', '.content')"
+          },
+          "includeLinks": {
+            "type": "boolean",
+            "description": "Preserve hyperlinks in the extracted Markdown",
+            "default": true
+          },
+          "maxLength": {
+            "type": "number",
+            "description": "Maximum character length of extracted text",
+            "default": 50000
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "extract_links",
+      "description": "Extract all links from a page with anchor text, href, and link type classification.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to extract links from"
+          },
+          "selector": {
+            "type": "string",
+            "description": "CSS selector to scope link extraction"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["all", "internal", "external"],
+            "description": "Filter links by type",
+            "default": "all"
+          },
+          "maxLinks": {
+            "type": "number",
+            "description": "Maximum number of links to return",
+            "default": 200
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "screenshot_url",
+      "description": "Capture a screenshot of a webpage as PNG with configurable viewport and full-page support.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to screenshot"
+          },
+          "width": {
+            "type": "number",
+            "description": "Viewport width in pixels",
+            "default": 1280
+          },
+          "height": {
+            "type": "number",
+            "description": "Viewport height in pixels",
+            "default": 720
+          },
+          "fullPage": {
+            "type": "boolean",
+            "description": "Capture the full scrollable page",
+            "default": false
+          },
+          "outputPath": {
+            "type": "string",
+            "description": "File path to save the screenshot"
+          }
+        },
+        "required": ["url"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/web-crawler"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {}
+}

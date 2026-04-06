@@ -1,0 +1,128 @@
+{
+  "name": "@qualixar/image-generator",
+  "version": "1.0.0",
+  "description": "Generate, edit, and describe images using DALL-E, Stable Diffusion, or local models — visual creativity for agents.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "creative",
+  "tags": ["image", "generate", "dall-e", "stable-diffusion", "creative", "vision"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "generate_image",
+      "description": "Generate an image from a text prompt using DALL-E, Stable Diffusion, or a local model backend.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Text description of the image to generate"
+          },
+          "model": {
+            "type": "string",
+            "enum": ["dall-e-3", "dall-e-2", "stable-diffusion-xl", "local"],
+            "description": "Image generation model to use",
+            "default": "dall-e-3"
+          },
+          "size": {
+            "type": "string",
+            "enum": ["256x256", "512x512", "1024x1024", "1024x1792", "1792x1024"],
+            "description": "Output image dimensions",
+            "default": "1024x1024"
+          },
+          "quality": {
+            "type": "string",
+            "enum": ["standard", "hd"],
+            "description": "Image quality level (DALL-E 3 only)",
+            "default": "standard"
+          },
+          "style": {
+            "type": "string",
+            "enum": ["vivid", "natural"],
+            "description": "Image style (DALL-E 3 only)",
+            "default": "vivid"
+          },
+          "outputPath": {
+            "type": "string",
+            "description": "File path to save the generated image"
+          },
+          "negativePrompt": {
+            "type": "string",
+            "description": "Things to exclude from the image (Stable Diffusion only)"
+          }
+        },
+        "required": ["prompt"]
+      }
+    },
+    {
+      "name": "edit_image",
+      "description": "Edit an existing image with a text prompt — inpainting, outpainting, and style transfer.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "imagePath": {
+            "type": "string",
+            "description": "Path to the source image"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Description of the desired edit"
+          },
+          "maskPath": {
+            "type": "string",
+            "description": "Path to a mask image for inpainting (white = edit region)"
+          },
+          "model": {
+            "type": "string",
+            "enum": ["dall-e-2", "stable-diffusion-xl", "local"],
+            "description": "Model to use for editing",
+            "default": "dall-e-2"
+          },
+          "outputPath": {
+            "type": "string",
+            "description": "File path to save the edited image"
+          }
+        },
+        "required": ["imagePath", "prompt"]
+      }
+    },
+    {
+      "name": "describe_image",
+      "description": "Analyze an image and return a detailed text description of its contents, objects, and scene.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "imagePath": {
+            "type": "string",
+            "description": "Path to the image file to describe"
+          },
+          "detail": {
+            "type": "string",
+            "enum": ["brief", "detailed", "structured"],
+            "description": "Level of description detail",
+            "default": "detailed"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Specific aspect to focus on (e.g., 'text content', 'colors', 'people', 'objects')"
+          }
+        },
+        "required": ["imagePath"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/image-generator"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {
+    "env": {
+      "OPENAI_API_KEY": {
+        "description": "OpenAI API key for DALL-E models (optional if using local models)",
+        "required": false
+      }
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "name": "@qualixar/file-operations",
+  "version": "1.0.0",
+  "description": "Read, write, search, glob, and diff files on the local filesystem — the essential toolkit for every agent.",
+  "author": { "name": "Qualixar", "url": "https://qualixar.com" },
+  "license": "Elastic-2.0",
+  "category": "code-dev",
+  "tags": ["files", "filesystem", "read", "write", "search", "diff", "built-in"],
+  "pricing": { "model": "free" },
+  "tools": [
+    {
+      "name": "file_read",
+      "description": "Read the contents of a file with optional line range. Supports text, JSON, YAML, and binary detection.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path to the file"
+          },
+          "startLine": {
+            "type": "number",
+            "description": "Start reading from this line number (1-based)"
+          },
+          "endLine": {
+            "type": "number",
+            "description": "Stop reading at this line number (inclusive)"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "File encoding",
+            "default": "utf-8"
+          }
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "file_write",
+      "description": "Write content to a file, creating directories as needed. Supports atomic writes and backup creation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Absolute path for the output file"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to write to the file"
+          },
+          "createDirectories": {
+            "type": "boolean",
+            "description": "Create parent directories if they don't exist",
+            "default": true
+          },
+          "backup": {
+            "type": "boolean",
+            "description": "Create a .bak backup before overwriting",
+            "default": false
+          }
+        },
+        "required": ["path", "content"]
+      }
+    },
+    {
+      "name": "file_search",
+      "description": "Search file contents using regex patterns with context lines, similar to ripgrep.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Regex pattern to search for"
+          },
+          "directory": {
+            "type": "string",
+            "description": "Directory to search in"
+          },
+          "glob": {
+            "type": "string",
+            "description": "File glob filter (e.g., '*.ts', '**/*.py')"
+          },
+          "contextLines": {
+            "type": "number",
+            "description": "Number of context lines before and after match",
+            "default": 2
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum number of matches to return",
+            "default": 50
+          },
+          "caseSensitive": {
+            "type": "boolean",
+            "description": "Case-sensitive matching",
+            "default": true
+          }
+        },
+        "required": ["pattern", "directory"]
+      }
+    },
+    {
+      "name": "file_glob",
+      "description": "Find files matching glob patterns, sorted by modification time.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Glob pattern (e.g., '**/*.ts', 'src/**/*.test.js')"
+          },
+          "directory": {
+            "type": "string",
+            "description": "Root directory to search from"
+          },
+          "maxResults": {
+            "type": "number",
+            "description": "Maximum files to return",
+            "default": 100
+          },
+          "includeHidden": {
+            "type": "boolean",
+            "description": "Include hidden files and directories",
+            "default": false
+          }
+        },
+        "required": ["pattern", "directory"]
+      }
+    },
+    {
+      "name": "file_diff",
+      "description": "Compute a unified diff between two files or between file content and a string.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pathA": {
+            "type": "string",
+            "description": "Path to the first file"
+          },
+          "pathB": {
+            "type": "string",
+            "description": "Path to the second file"
+          },
+          "contextLines": {
+            "type": "number",
+            "description": "Number of context lines in the diff output",
+            "default": 3
+          }
+        },
+        "required": ["pathA", "pathB"]
+      }
+    }
+  ],
+  "transport": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@qualixar/file-operations"]
+  },
+  "compatibility": { "qclaw": ">=2.1.0", "node": ">=20.0.0" },
+  "dependencies": {}
+}

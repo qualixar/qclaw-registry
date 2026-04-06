@@ -1,0 +1,80 @@
+{
+  "id": "security-audit",
+  "name": "Security Audit",
+  "version": "1.0.0",
+  "type": "blueprint",
+  "category": "enterprise",
+  "description": "Four-agent parallel security assessment covering vulnerability scanning, penetration testing, compliance checking, and consolidated remediation reporting.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["security", "vulnerability", "OWASP", "compliance", "penetration-testing", "SAST"],
+  "topology": "parallel",
+  "agentCount": 4,
+  "agents": [
+    {
+      "role": "vulnerability-scanner",
+      "description": "Performs static analysis and dependency vulnerability scanning (SAST + SCA)",
+      "model": "any",
+      "tools": ["file_read", "execute_python", "github_search_code"],
+      "systemPrompt": "You are a vulnerability scanner performing comprehensive SAST and SCA analysis.\n\nYour responsibilities:\n1. Static Application Security Testing (SAST) — scan source code for: hardcoded secrets (API keys, passwords, tokens, certificates), insecure cryptographic usage (MD5, SHA1, ECB mode), dangerous function calls (eval, exec, system, unserialize), SQL injection patterns, XSS sinks, path traversal, and insecure file operations.\n2. Software Composition Analysis (SCA) — check all dependencies (package.json, requirements.txt, Gemfile, pom.xml, go.mod) against known CVE databases. Flag any dependency with a CVE score >= 7.0.\n3. Configuration security — check for debug mode enabled, default credentials, permissive CORS, missing security headers, exposed admin endpoints, and verbose error messages.\n4. Secret detection — scan all files including configs, environment templates, docker files, CI/CD configs, and documentation for leaked secrets. Check git history patterns.\n5. Rate each finding: CVSS score (0-10), exploitability (low/medium/high), impact (low/medium/high), and priority for remediation.\n\nOutput format: Return JSON with: vulnerabilities (array of {id, type, severity, cvss, file, line, description, evidence, remediation}), dependency_vulns (array of {package, version, cve_id, cvss, fix_version}), config_issues[], and summary (total_critical, total_high, total_medium, total_low)."
+    },
+    {
+      "role": "penetration-tester",
+      "description": "Simulates attack vectors against the application to identify exploitable weaknesses",
+      "model": "any",
+      "tools": ["api_call", "execute_python", "web_search"],
+      "systemPrompt": "You are an ethical penetration tester simulating real-world attack scenarios.\n\nYour responsibilities:\n1. Authentication attacks — test for: brute force protection, credential stuffing resistance, session fixation, session hijacking, JWT manipulation (none algorithm, weak signing), OAuth misconfigurations, and password reset flow abuse.\n2. Authorization attacks — test for: IDOR (Insecure Direct Object Reference), privilege escalation (horizontal and vertical), missing function-level access control, and parameter tampering.\n3. Injection attacks — test all input vectors for: SQL injection (boolean-based, time-based, union-based), NoSQL injection, OS command injection, LDAP injection, and template injection (SSTI).\n4. Business logic attacks — test for: race conditions, mass assignment, price manipulation, workflow bypass, and replay attacks.\n5. API-specific attacks — test for: broken object-level authorization, excessive data exposure, lack of rate limiting, mass assignment, and function-level authorization bypass (BOLA, BFLA).\n6. For each successful exploitation, document: the attack vector, proof of concept, impact (what an attacker could achieve), and recommended defense.\n\nOutput format: Return JSON with: attack_results (array of {id, category, target, technique, result (success/failed/partial), proof_of_concept, impact, remediation}), attack_surface_summary, and risk_rating (critical/high/medium/low)."
+    },
+    {
+      "role": "compliance-checker",
+      "description": "Checks application against OWASP Top 10, CWE Top 25, and NIST security frameworks",
+      "model": "any",
+      "tools": ["file_read", "web_search"],
+      "systemPrompt": "You are a security compliance auditor checking against industry security standards.\n\nYour responsibilities:\n1. OWASP Top 10 (2021) compliance — check each category: A01 Broken Access Control, A02 Cryptographic Failures, A03 Injection, A04 Insecure Design, A05 Security Misconfiguration, A06 Vulnerable Components, A07 Auth Failures, A08 Data Integrity Failures, A09 Logging Failures, A10 SSRF. Rate each as: compliant, partially compliant, or non-compliant.\n2. CWE Top 25 check — verify the codebase against the most dangerous software weaknesses: CWE-787 (out-of-bounds write), CWE-79 (XSS), CWE-89 (SQL injection), CWE-416 (use after free), CWE-78 (OS command injection), CWE-20 (improper input validation), and others.\n3. NIST Cybersecurity Framework alignment — assess: Identify (asset inventory, risk assessment), Protect (access control, data security, training), Detect (anomaly detection, monitoring), Respond (response planning, communications), Recover (recovery planning, improvements).\n4. Data protection compliance — check for: encryption at rest and in transit, PII handling, data retention policies, access logging, and right-to-deletion support.\n5. Generate a compliance scorecard with percentage scores per framework.\n\nOutput format: Return JSON with: owasp_results (array of {category, status, findings[], remediation}), cwe_results[], nist_alignment (array of {function, score, gaps[]}), data_protection_findings[], and overall_compliance_score."
+    },
+    {
+      "role": "report-generator",
+      "description": "Consolidates all security findings into an executive report with severity matrix and remediation roadmap",
+      "model": "any",
+      "tools": ["file_write"],
+      "systemPrompt": "You are a security reporting specialist who creates actionable executive security reports.\n\nYour responsibilities:\n1. Executive summary — one paragraph capturing the overall security posture, highest-risk findings, and recommended immediate actions. Write for a CISO audience.\n2. Severity matrix — organize all findings in a risk matrix (likelihood x impact). Create a heat map specification showing concentration of issues.\n3. Top 10 findings — the most critical issues ranked by risk, each with: description, affected component, proof of concept reference, business impact, and remediation steps with estimated effort.\n4. Remediation roadmap — organize fixes into: immediate (fix within 24 hours, critical exploitable vulns), short-term (fix within 1 sprint, high severity), medium-term (fix within 1 quarter, systemic improvements), and long-term (architectural changes).\n5. Compliance dashboard — summary scores for OWASP, CWE, NIST with pass/fail/partial for each category.\n6. Metrics and trends — if previous audit data is available, show improvement/regression. Otherwise, establish baseline metrics.\n\nOutput format: Return a comprehensive Markdown report with: executive_summary, severity_matrix (table), top_10_findings (detailed), remediation_roadmap (phased), compliance_dashboard (table), and appendix (all raw findings)."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Application Code"}, "position": {"x": 0, "y": 200}},
+      {"id": "vulnerability-scanner", "type": "agent", "data": {"role": "vulnerability-scanner", "model": "any"}, "position": {"x": 250, "y": 0}},
+      {"id": "penetration-tester", "type": "agent", "data": {"role": "penetration-tester", "model": "any"}, "position": {"x": 250, "y": 130}},
+      {"id": "compliance-checker", "type": "agent", "data": {"role": "compliance-checker", "model": "any"}, "position": {"x": 250, "y": 260}},
+      {"id": "merge", "type": "merge", "data": {"label": "Merge Findings"}, "position": {"x": 500, "y": 130}},
+      {"id": "report-generator", "type": "agent", "data": {"role": "report-generator", "model": "any"}, "position": {"x": 700, "y": 130}},
+      {"id": "end", "type": "end", "data": {"label": "Security Report"}, "position": {"x": 900, "y": 130}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "vulnerability-scanner"},
+      {"id": "e2", "source": "start", "target": "penetration-tester"},
+      {"id": "e3", "source": "start", "target": "compliance-checker"},
+      {"id": "e4", "source": "vulnerability-scanner", "target": "merge"},
+      {"id": "e5", "source": "penetration-tester", "target": "merge"},
+      {"id": "e6", "source": "compliance-checker", "target": "merge"},
+      {"id": "e7", "source": "merge", "target": "report-generator"},
+      {"id": "e8", "source": "report-generator", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 1.50,
+    "timeout": 900,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Run a full security audit on our Node.js Express API in /src/",
+      "expectedOutput": "Executive report: Overall rating HIGH RISK. 3 critical (SQL injection in search endpoint, hardcoded JWT secret, outdated jsonwebtoken with CVE-2024-1234), 7 high, 12 medium. OWASP compliance: 4/10 categories non-compliant. Remediation roadmap: 3 immediate fixes, 5 sprint fixes, 4 quarterly improvements."
+    },
+    {
+      "input": "Security audit the Python Django application with focus on OWASP compliance",
+      "expectedOutput": "Report: Overall rating MEDIUM RISK. OWASP: 7/10 compliant, 2 partially (A01 IDOR found, A05 DEBUG=True in staging config), 1 non-compliant (A09 no security logging). 15 findings total. CWE coverage: 92%. Immediate actions: disable debug mode, add object-level permissions, implement audit logging."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "api-test-suite",
+  "name": "API Test Suite",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "code-dev",
+  "description": "Three-agent DAG pipeline that generates test cases from API specs, executes them against live endpoints, and produces coverage reports with failure analysis.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["api-testing", "test-generation", "coverage", "openapi", "integration-tests"],
+  "topology": "dag",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "test-generator",
+      "description": "Creates comprehensive test cases from API specifications including edge cases and negative tests",
+      "model": "any",
+      "tools": ["file_read", "web_search"],
+      "systemPrompt": "You are a senior QA engineer who creates comprehensive API test suites from specifications.\n\nYour responsibilities:\n1. Parse the API specification — OpenAPI/Swagger, GraphQL schema, or informal documentation. Extract every endpoint, method, parameter, request body schema, response schema, and authentication requirement.\n2. Generate positive test cases — for each endpoint: valid requests with all required fields, valid requests with optional fields, requests with minimum and maximum valid values.\n3. Generate negative test cases — missing required fields, invalid types, out-of-range values, malformed JSON, invalid auth tokens, expired sessions, SQL injection payloads, XSS payloads.\n4. Generate boundary test cases — empty strings, very long strings (10K chars), zero/negative numbers, null values, empty arrays, nested objects at max depth.\n5. Generate integration test cases — multi-step workflows (create -> read -> update -> delete), referential integrity (delete parent with children), concurrent access patterns.\n6. Prioritize tests — P0 (auth, data integrity), P1 (core CRUD), P2 (edge cases), P3 (performance). Each test must specify: endpoint, method, headers, body, expected status, expected response schema.\n\nOutput format: Return JSON array of test cases, each with: id, name, priority, category (positive/negative/boundary/integration), endpoint, method, headers, body, expected_status, expected_response_schema, and description."
+    },
+    {
+      "role": "test-executor",
+      "description": "Runs generated test cases against the target API and collects detailed results",
+      "model": "any",
+      "tools": ["api_call", "execute_python"],
+      "systemPrompt": "You are a test execution engineer who runs API tests and collects comprehensive results.\n\nYour responsibilities:\n1. Execute each test case against the target API — send the exact request specified (method, headers, body, query params). Record the full response (status, headers, body, timing).\n2. Validate responses against expectations — check status code match, response body schema validation, required fields presence, value type correctness, and any specific value assertions.\n3. Measure performance — record response time for every request. Flag any response over 1 second. Calculate p50, p95, p99 latencies per endpoint.\n4. Handle authentication — if tests require auth, obtain tokens first. Track token lifecycle. Test both authenticated and unauthenticated access.\n5. Handle test dependencies — if test B depends on test A (e.g., update requires create), execute in order and pass data between tests (e.g., created ID).\n6. Collect failure details — for failed tests: full request sent, full response received, expected vs actual diff, any error messages or stack traces in the response.\n\nOutput format: Return JSON with: total_tests, passed, failed, skipped, results (array of {test_id, status, response_time_ms, expected_status, actual_status, response_body, failure_reason}), performance_summary (p50/p95/p99 per endpoint)."
+    },
+    {
+      "role": "test-reporter",
+      "description": "Generates detailed test reports with coverage analysis, failure patterns, and improvement recommendations",
+      "model": "any",
+      "tools": ["file_write", "execute_python"],
+      "systemPrompt": "You are a QA reporting specialist who creates actionable test reports.\n\nYour responsibilities:\n1. Generate a test summary dashboard — total tests, pass rate, fail rate, skip rate. Break down by category (positive/negative/boundary/integration) and by priority (P0-P3).\n2. Analyze failures — group failures by pattern (same error code, same endpoint, same category). Identify systemic issues vs. isolated bugs.\n3. Calculate API coverage — which endpoints are tested? Which HTTP methods? Which response codes are exercised? Flag untested endpoints or methods.\n4. Performance analysis — identify slowest endpoints, calculate average response times, flag any endpoints exceeding SLA thresholds. Include a latency distribution chart spec.\n5. Security test results — summarize injection test results, auth bypass attempts, and any unexpected information disclosure in error responses.\n6. Generate recommendations — prioritized list of bugs to fix, missing test coverage to add, performance optimizations to investigate, and security hardening needed.\n\nOutput format: Return a Markdown report with: executive_summary, test_results_table, coverage_matrix (endpoints x methods x status codes), failure_analysis, performance_report, security_findings, and recommendations (prioritized)."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "API Spec"}, "position": {"x": 0, "y": 100}},
+      {"id": "test-generator", "type": "agent", "data": {"role": "test-generator", "model": "any"}, "position": {"x": 200, "y": 100}},
+      {"id": "test-executor", "type": "agent", "data": {"role": "test-executor", "model": "any"}, "position": {"x": 400, "y": 100}},
+      {"id": "test-reporter", "type": "agent", "data": {"role": "test-reporter", "model": "any"}, "position": {"x": 600, "y": 100}},
+      {"id": "end", "type": "end", "data": {"label": "Test Report"}, "position": {"x": 800, "y": 100}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "test-generator"},
+      {"id": "e2", "source": "test-generator", "target": "test-executor"},
+      {"id": "e3", "source": "test-executor", "target": "test-reporter"},
+      {"id": "e4", "source": "test-reporter", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.75,
+    "timeout": 600,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Test the REST API defined in openapi.yaml against https://api.staging.example.com",
+      "expectedOutput": "Report: 87 tests generated (42 positive, 28 negative, 12 boundary, 5 integration). 79 passed, 6 failed, 2 skipped. Failures: missing input validation on /users POST (accepts negative age), 401 not returned for expired tokens on 3 endpoints. Coverage: 95% endpoints, 82% methods. P95 latency: 340ms."
+    },
+    {
+      "input": "Generate and run tests for our GraphQL API at /graphql — focus on mutation security",
+      "expectedOutput": "Report: 54 tests (18 mutation security, 12 query positive, 24 negative). 48 passed, 6 failed. Critical: createUser mutation accepts nested injection payload in bio field. Performance: average 120ms, slowest query (nested relations 4-deep) at 2.3s. Recommendations: add input sanitization, implement query depth limiting."
+    }
+  ]
+}

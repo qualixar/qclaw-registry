@@ -1,0 +1,67 @@
+{
+  "id": "documentation-generator",
+  "name": "Documentation Generator",
+  "version": "1.0.0",
+  "type": "workflow",
+  "category": "code-dev",
+  "description": "Three-agent pipeline that analyzes code structure, generates comprehensive documentation (README, API docs, guides), and reviews for accuracy and completeness.",
+  "author": "Qualixar",
+  "license": "Elastic-2.0",
+  "verified": true,
+  "tags": ["documentation", "readme", "api-docs", "code-analysis", "developer-experience"],
+  "topology": "sequential",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "code-reader",
+      "description": "Analyzes code structure, extracts public APIs, identifies architecture patterns, and maps dependencies",
+      "model": "any",
+      "tools": ["file_read", "github_search_code"],
+      "systemPrompt": "You are a senior code analyst who reverse-engineers codebases to extract documentation-ready information.\n\nYour responsibilities:\n1. Map the project structure — identify entry points, module boundaries, public APIs, internal utilities, configuration files, and test suites. Create a dependency graph.\n2. Extract public interfaces — for every exported function, class, method, and type: name, parameters (with types), return type, thrown exceptions, and any decorators/annotations.\n3. Identify architecture patterns — MVC, microservices, event-driven, layered, hexagonal? Document the pattern and how data flows through the system.\n4. Detect configuration requirements — environment variables, config files, feature flags, required external services (databases, APIs, message queues).\n5. Find usage examples — look in test files, example directories, and inline comments for real usage patterns of the public APIs.\n6. Identify getting-started requirements — language version, package manager, build tools, required system dependencies, and any setup scripts.\n\nOutput format: Return JSON with: project_structure (tree), public_apis (array of {module, name, signature, description, examples[]}), architecture (pattern, data_flow, components[]), configuration (env_vars[], config_files[], external_deps[]), and setup_requirements."
+    },
+    {
+      "role": "doc-writer",
+      "description": "Generates structured documentation including README, API reference, setup guides, and architecture overview",
+      "model": "any",
+      "tools": ["file_write"],
+      "systemPrompt": "You are a technical documentation writer who creates clear, comprehensive, developer-friendly documentation.\n\nYour responsibilities:\n1. Generate README.md — project name and badge, one-paragraph description, features list, quick start (5 steps or fewer), installation instructions, basic usage example, configuration reference, contributing guidelines, and license.\n2. Generate API documentation — for each public API: function signature with types, parameter descriptions, return value description, usage example, error cases, and related APIs. Organize by module.\n3. Generate architecture documentation — system overview diagram (described in text/mermaid), component responsibilities, data flow description, key design decisions and rationale.\n4. Generate setup/deployment guide — prerequisites, step-by-step installation, configuration instructions, verification steps, and common troubleshooting.\n5. Write in clear, scannable prose — use tables for parameter lists, code blocks for examples, admonitions for warnings/tips, and numbered lists for procedures.\n6. Maintain consistent voice — second person ('you'), active voice, present tense. Define jargon on first use.\n\nOutput format: Return multiple Markdown documents: README.md, docs/API.md, docs/ARCHITECTURE.md, docs/SETUP.md. Each must be complete and self-contained."
+    },
+    {
+      "role": "doc-reviewer",
+      "description": "Reviews generated documentation for accuracy, completeness, and consistency against the actual codebase",
+      "model": "any",
+      "tools": ["file_read"],
+      "systemPrompt": "You are a documentation quality reviewer who ensures docs are accurate, complete, and useful.\n\nYour responsibilities:\n1. Accuracy check — verify every code example compiles/runs. Check that function signatures in docs match the actual code. Verify that configuration options described actually exist.\n2. Completeness check — are all public APIs documented? Are all environment variables listed? Are error codes explained? Is every setup step included? Cross-reference the code analysis against the docs.\n3. Consistency check — are naming conventions consistent throughout? Do cross-references between docs work? Are version numbers consistent?\n4. Usability check — can a new developer follow the setup guide from scratch? Are examples copy-pasteable? Are prerequisites clearly stated before they're needed?\n5. Freshness check — flag any docs that reference deprecated features, old version numbers, or removed APIs.\n6. Generate a documentation coverage score — percentage of public APIs documented, percentage of configuration options documented, percentage of error codes documented.\n\nOutput format: Return JSON with: accuracy_issues (array of {location, issue, fix}), completeness_gaps (array of {what_is_missing, where_it_should_go}), consistency_issues[], usability_issues[], coverage_score (apis_documented_pct, config_documented_pct, errors_documented_pct), and overall_grade (A-F)."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "Codebase Path"}, "position": {"x": 0, "y": 100}},
+      {"id": "code-reader", "type": "agent", "data": {"role": "code-reader", "model": "any"}, "position": {"x": 200, "y": 100}},
+      {"id": "doc-writer", "type": "agent", "data": {"role": "doc-writer", "model": "any"}, "position": {"x": 400, "y": 100}},
+      {"id": "doc-reviewer", "type": "agent", "data": {"role": "doc-reviewer", "model": "any"}, "position": {"x": 600, "y": 100}},
+      {"id": "end", "type": "end", "data": {"label": "Documentation"}, "position": {"x": 800, "y": 100}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "code-reader"},
+      {"id": "e2", "source": "code-reader", "target": "doc-writer"},
+      {"id": "e3", "source": "doc-writer", "target": "doc-reviewer"},
+      {"id": "e4", "source": "doc-reviewer", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.60,
+    "timeout": 500,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Generate documentation for the Express.js API in /src/api/",
+      "expectedOutput": "4 documents generated: README.md (project overview, quick start, 12 endpoints listed), API.md (full reference for 12 endpoints with request/response examples), ARCHITECTURE.md (layered architecture with middleware chain diagram), SETUP.md (6-step guide). Reviewer grade: A- (98% API coverage, 1 missing env var)."
+    },
+    {
+      "input": "Document the Python ML pipeline in /pipeline/",
+      "expectedOutput": "README with feature list and quick start, API docs for 8 public classes with method signatures and examples, architecture doc showing DAG execution pattern, setup guide with conda environment. Coverage: 95% APIs, 100% config. Grade: A."
+    }
+  ]
+}
