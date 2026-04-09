@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "updatedAt": "2026-04-06T00:00:00Z",
+  "updatedAt": "2026-04-10T00:00:00Z",
   "plugins": [
     {
       "id": "web-search",
       "name": "Web Search",
       "author": "Qualixar",
-      "description": "Search the web, news, and images via DuckDuckGo \u2014 zero API keys, zero cost, instant results for any agent.",
+      "description": "Search the web, news, and images via DuckDuckGo — zero API keys, zero cost, instant results for any agent.",
       "type": "tool",
       "types": [
         "tool"
@@ -15,8 +15,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-web-search",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/web-search/-/web-search-1.0.0.tgz",
-      "sha256": "placeholder:sha256:web-search-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/web-search/skill.json",
+      "sha256": "6bca27634b114fe52fa4e55dc23a6a9dc95ec6f541eab86bd94ba3bb0250074a",
       "verified": true,
       "tags": [
         "web",
@@ -27,13 +27,13 @@
         "free"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "github-tools",
       "name": "GitHub Tools",
       "author": "Qualixar",
-      "description": "Full GitHub operations \u2014 search code, create issues, list PRs, and read files directly from any repository.",
+      "description": "Full GitHub operations — search code, create issues, list PRs, and read files directly from any repository.",
       "type": "tool",
       "types": [
         "tool"
@@ -42,8 +42,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-github-tools",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/github-tools/-/github-tools-1.0.0.tgz",
-      "sha256": "placeholder:sha256:github-tools-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/github-tools/skill.json",
+      "sha256": "d39207f65daee691794292b7836887131f832beeefa6af0529d0c05a061a5a07",
       "verified": true,
       "tags": [
         "github",
@@ -54,13 +54,13 @@
         "devops"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "file-operations",
       "name": "File Operations",
       "author": "Qualixar",
-      "description": "Read, write, search, glob, and diff files on the local filesystem \u2014 the essential toolkit for every agent.",
+      "description": "Read, write, search, glob, and diff files on the local filesystem — the essential toolkit for every agent.",
       "type": "tool",
       "types": [
         "tool"
@@ -69,8 +69,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-file-operations",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/file-operations/-/file-operations-1.0.0.tgz",
-      "sha256": "placeholder:sha256:file-operations-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/file-operations/skill.json",
+      "sha256": "04fa3f4c71dbdae3b0587c428974d783e3fa448a676c3abed3678432a6d18d92",
       "verified": true,
       "tags": [
         "files",
@@ -82,7 +82,7 @@
         "built-in"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "code-executor",
@@ -97,8 +97,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-code-executor",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/code-executor/-/code-executor-1.0.0.tgz",
-      "sha256": "placeholder:sha256:code-executor-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/code-executor/skill.json",
+      "sha256": "e75c5549600315d19d6fc68254a32b59c9698f014d23f5ca99e087963899d5a4",
       "verified": true,
       "tags": [
         "code",
@@ -110,13 +110,13 @@
         "runtime"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "database-query",
       "name": "Database Query",
       "author": "Qualixar",
-      "description": "Query SQLite and PostgreSQL databases \u2014 run SQL, inspect schemas, and list tables with zero boilerplate.",
+      "description": "Query SQLite and PostgreSQL databases — run SQL, inspect schemas, and list tables with zero boilerplate.",
       "type": "tool",
       "types": [
         "tool"
@@ -125,8 +125,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-database-query",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/database-query/-/database-query-1.0.0.tgz",
-      "sha256": "placeholder:sha256:database-query-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/database-query/skill.json",
+      "sha256": "a972a2a79aac5666027b7876c0eb209de220e34f7aed2268ae6d7f523fc8ebd5",
       "verified": true,
       "tags": [
         "database",
@@ -137,13 +137,13 @@
         "schema"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "web-crawler",
       "name": "Web Crawler",
       "author": "Qualixar",
-      "description": "Crawl URLs, extract text and links, and capture screenshots \u2014 turn any webpage into structured agent-ready data.",
+      "description": "Crawl URLs, extract text and links, and capture screenshots — turn any webpage into structured agent-ready data.",
       "type": "tool",
       "types": [
         "tool"
@@ -152,8 +152,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-web-crawler",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/web-crawler/-/web-crawler-1.0.0.tgz",
-      "sha256": "placeholder:sha256:web-crawler-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/web-crawler/skill.json",
+      "sha256": "b3b9e20a746a7100de9366d1cc5084ca2b1783556237becfda4aa2d17d140971",
       "verified": true,
       "tags": [
         "web",
@@ -164,13 +164,13 @@
         "html"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "slack-integration",
       "name": "Slack Integration",
       "author": "Qualixar",
-      "description": "Send messages, read channels, search history, and list channels in Slack \u2014 connect your agents to team communication.",
+      "description": "Send messages, read channels, search history, and list channels in Slack — connect your agents to team communication.",
       "type": "tool",
       "types": [
         "tool"
@@ -179,8 +179,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-slack-integration",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/slack-integration/-/slack-integration-1.0.0.tgz",
-      "sha256": "placeholder:sha256:slack-integration-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/slack-integration/skill.json",
+      "sha256": "939488411d8e50ca1855892814937f0899e24a4174fa1df73afca414b5de7c50",
       "verified": true,
       "tags": [
         "slack",
@@ -191,13 +191,13 @@
         "chat"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "email-tools",
       "name": "Email Tools",
       "author": "Qualixar",
-      "description": "Send, read, and search email \u2014 give your agents the ability to communicate over SMTP and IMAP protocols.",
+      "description": "Send, read, and search email — give your agents the ability to communicate over SMTP and IMAP protocols.",
       "type": "tool",
       "types": [
         "tool"
@@ -206,8 +206,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-email-tools",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/email-tools/-/email-tools-1.0.0.tgz",
-      "sha256": "placeholder:sha256:email-tools-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/email-tools/skill.json",
+      "sha256": "ef9eed3c39d11b3067cb3ee9d18972e94f5f935c1543c807116dafdbac86c656",
       "verified": true,
       "tags": [
         "email",
@@ -218,13 +218,13 @@
         "inbox"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "image-generator",
       "name": "Image Generator",
       "author": "Qualixar",
-      "description": "Generate, edit, and describe images using DALL-E, Stable Diffusion, or local models \u2014 visual creativity for agents.",
+      "description": "Generate, edit, and describe images using DALL-E, Stable Diffusion, or local models — visual creativity for agents.",
       "type": "tool",
       "types": [
         "tool"
@@ -233,8 +233,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-image-generator",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/image-generator/-/image-generator-1.0.0.tgz",
-      "sha256": "placeholder:sha256:image-generator-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/image-generator/skill.json",
+      "sha256": "6acfc69a1274900bc2a37dbe72da709269f92bb7ddfd45d1ff85bd753293bfb5",
       "verified": true,
       "tags": [
         "image",
@@ -245,13 +245,13 @@
         "vision"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "api-connector",
       "name": "API Connector",
       "author": "Qualixar",
-      "description": "Call any REST API with authentication, retry logic, and rate limiting \u2014 the universal enterprise integration bridge.",
+      "description": "Call any REST API with authentication, retry logic, and rate limiting — the universal enterprise integration bridge.",
       "type": "tool",
       "types": [
         "tool"
@@ -260,8 +260,8 @@
       "stars": 0,
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-plugin-api-connector",
-      "tarballUrl": "https://registry.npmjs.org/@qualixar/api-connector/-/api-connector-1.0.0.tgz",
-      "sha256": "placeholder:sha256:api-connector-1.0.0",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/plugins/api-connector/skill.json",
+      "sha256": "d0b9857c0731bb56e63f3f4979438d85f75ce710784f43dd03245aa39ffe742d",
       "verified": true,
       "tags": [
         "api",
@@ -273,7 +273,7 @@
         "retry"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "api-test-suite",
@@ -289,7 +289,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/api-test-suite.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "43222f58da223e073df002134b034ada87af22604df21fdb4f5a08c63c4e0911",
       "verified": true,
       "tags": [
         "api-testing",
@@ -299,7 +299,7 @@
         "integration-tests"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "bug-triage-team",
@@ -315,7 +315,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/bug-triage-team.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "b8fd7c460963b4972b66ea94af62062a0fc9591605132e0140debd9b0ec654c3",
       "verified": true,
       "tags": [
         "debugging",
@@ -325,7 +325,7 @@
         "root-cause-analysis"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "code-review-pipeline",
@@ -341,7 +341,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/code-review-pipeline.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "f3b2a00dd1d5dd037f79b375bae989d2be50c20fab23e99fb3c3014cba298e72",
       "verified": true,
       "tags": [
         "code-review",
@@ -351,7 +351,7 @@
         "best-practices"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "competitive-analysis",
@@ -367,7 +367,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/competitive-analysis.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "c068971472e5aca1b7b48e8efcaa616862916af69cdeade0e4b96cbae006fd57",
       "verified": true,
       "tags": [
         "competitive-intelligence",
@@ -377,7 +377,7 @@
         "positioning"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "content-writer",
@@ -393,7 +393,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/content-writer.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "0ced5ddb4956f04f08167079ce4690a3363c3dfb15752ddcf2b0f7867df287b1",
       "verified": true,
       "tags": [
         "writing",
@@ -404,7 +404,7 @@
         "articles"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "customer-support-bot",
@@ -420,7 +420,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/customer-support-bot.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "039460b176d73bc5a4ad40af893399fbd45b99b71c0610dc7e510465c3f3b720",
       "verified": true,
       "tags": [
         "customer-support",
@@ -430,7 +430,7 @@
         "escalation"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "data-analysis-pipeline",
@@ -446,7 +446,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/data-analysis-pipeline.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "4db0277484d37e75de88605854e96b6357ee73b90db3ad7ff8bf87140a88cb07",
       "verified": true,
       "tags": [
         "data-analysis",
@@ -456,7 +456,7 @@
         "reporting"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "documentation-generator",
@@ -472,7 +472,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/documentation-generator.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "0815f325a0af92257634f53cdda43a942a6a35339be8804f9b45c8970abda878",
       "verified": true,
       "tags": [
         "documentation",
@@ -482,7 +482,7 @@
         "developer-experience"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "knowledge-base-builder",
@@ -498,7 +498,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/knowledge-base-builder.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "c8b24bff7559fefe8b89d4dac44aba3baae5ce08c84d1bbde4aa02606d1306e0",
       "verified": true,
       "tags": [
         "knowledge-base",
@@ -509,7 +509,7 @@
         "Q&A"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "meeting-summarizer",
@@ -525,7 +525,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/meeting-summarizer.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "a6d392adfb2b954790c9ddb298d6c900fb258c44f4f755371a069b84eb12ce08",
       "verified": true,
       "tags": [
         "meetings",
@@ -536,7 +536,7 @@
         "productivity"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "pr-review-bot",
@@ -552,7 +552,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/pr-review-bot.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "4b61a3f03598792edad8e057c6ddee31cb23f4b232109c0848898817d7bf8e1a",
       "verified": true,
       "tags": [
         "pull-request",
@@ -562,7 +562,7 @@
         "quality-gate"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "research-team",
@@ -578,7 +578,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/research-team.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "56d5e3a1bde1848133ea78fa75288a9184ecda62bf9f171e06a95a471ed87dbe",
       "verified": true,
       "tags": [
         "research",
@@ -588,7 +588,7 @@
         "knowledge-synthesis"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "security-audit",
@@ -604,7 +604,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/security-audit.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "d6cb88b6fc479b5201edaa17cf9ead96ac468d5463057ed75a6315072f828889",
       "verified": true,
       "tags": [
         "security",
@@ -615,7 +615,7 @@
         "SAST"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "sql-query-builder",
@@ -631,7 +631,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/sql-query-builder.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "4d0e370072758891b4e13f5d16b2852b19f00556a6223a862eff995985f2d892",
       "verified": true,
       "tags": [
         "SQL",
@@ -641,7 +641,7 @@
         "data-access"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     },
     {
       "id": "unit-test-generator",
@@ -657,7 +657,7 @@
       "installs": 0,
       "repo": "https://github.com/qualixar/qos-registry",
       "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/unit-test-generator.json",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sha256": "7b6bcabe62c1eb1e93f18a8e488f9617cbe87de03a9afeffe73df254384769b1",
       "verified": true,
       "tags": [
         "testing",
@@ -668,7 +668,7 @@
         "test-generation"
       ],
       "minQclawVersion": "2.1.0",
-      "updatedAt": "2026-04-06T00:00:00Z"
+      "updatedAt": "2026-04-10T00:00:00Z"
     }
   ]
 }
