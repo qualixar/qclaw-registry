@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updatedAt": "2026-04-10T00:00:00Z",
+  "updatedAt": "2026-05-12T22:04:00Z",
   "plugins": [
     {
       "id": "web-search",
@@ -669,6 +669,35 @@
       ],
       "minQclawVersion": "2.1.0",
       "updatedAt": "2026-04-10T00:00:00Z"
+    },
+    {
+      "id": "x-twitter-automation-tweetclaw",
+      "name": "X/Twitter Automation With TweetClaw",
+      "author": "Xquik",
+      "description": "Safe X/Twitter research, posting, monitoring, webhooks, follower exports, and giveaway draws through TweetClaw.",
+      "type": "skill",
+      "types": [
+        "skill"
+      ],
+      "version": "1.0.0",
+      "stars": 0,
+      "installs": 0,
+      "repo": "https://github.com/Xquik-dev/tweetclaw",
+      "tarballUrl": "https://raw.githubusercontent.com/qualixar/qos-registry/main/skills/x-twitter-automation-tweetclaw.json",
+      "sha256": "480f384660ccc7f9c81b9563484c76d24b7292f1d47af2450b5fa6472686b29c",
+      "verified": false,
+      "tags": [
+        "twitter",
+        "x-twitter",
+        "tweetclaw",
+        "openclaw",
+        "social-media",
+        "automation",
+        "webhooks",
+        "giveaways"
+      ],
+      "minQclawVersion": "2.1.0",
+      "updatedAt": "2026-05-12T22:04:00Z"
     }
   ]
 }
