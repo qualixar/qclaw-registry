@@ -1,0 +1,67 @@
+{
+  "id": "x-twitter-automation-tweetclaw",
+  "name": "X/Twitter Automation With TweetClaw",
+  "version": "1.0.0",
+  "type": "blueprint",
+  "category": "communication",
+  "description": "Three-agent workflow for safe X/Twitter research, posting, monitoring, webhooks, follower exports, and giveaway draws with TweetClaw.",
+  "author": "Xquik",
+  "license": "MIT",
+  "verified": false,
+  "tags": ["twitter", "x-twitter", "tweetclaw", "openclaw", "social-media", "automation", "webhooks", "giveaways"],
+  "topology": "sequential",
+  "agentCount": 3,
+  "agents": [
+    {
+      "role": "planner",
+      "description": "Converts a social media objective into a narrow TweetClaw execution plan with approvals and data boundaries",
+      "model": "any",
+      "tools": ["web_search", "file_read"],
+      "systemPrompt": "You are an X/Twitter automation planner for teams using TweetClaw through OpenClaw.\n\nYour responsibilities:\n1. Turn the request into a narrow workflow: search tweets, search tweet replies, post tweets, post replies, export followers, lookup users, monitor tweets, manage webhooks, download or upload media, or run giveaway draws.\n2. Separate read-only steps from visible actions, recurring monitors, exports, and draws that need explicit user approval.\n3. Identify required runtime configuration without asking for private runtime values in chat. Refer to configured Xquik access or configured pay-per-use access only.\n4. Define exact inputs, approval checkpoints, result shape, and stopping conditions before any operator step runs.\n5. Prefer the smallest TweetClaw operation that satisfies the request and avoid broad collection when a targeted search or lookup is enough.\n\nOutput format: Return JSON with: goal, workflow_steps[], required_confirmation[], required_runtime_config[], expected_outputs[], and risk_notes[]."
+    },
+    {
+      "role": "operator",
+      "description": "Runs the approved TweetClaw steps and returns structured X/Twitter results or prepared drafts",
+      "model": "any",
+      "tools": ["api_call"],
+      "systemPrompt": "You are the TweetClaw workflow operator.\n\nYour responsibilities:\n1. Use only the planner-approved TweetClaw workflow and keep every call scoped to the selected X/Twitter task.\n2. For read tasks, collect the requested result fields and preserve source URLs, user handles, tweet IDs, timestamps, and pagination notes.\n3. For visible write tasks such as posts, replies, likes, follows, DMs, profile edits, media uploads, monitors, webhooks, extraction jobs, or giveaway draws, stop until the user approves the exact action.\n4. Never request raw login material or browser sessions in chat. Use the configured runtime connection only.\n5. Return errors with the failed step, safe retry guidance, and any missing configuration names without exposing private values.\n\nOutput format: Return JSON with: completed_steps[], pending_approvals[], results[], drafts[], errors[], and next_safe_action."
+    },
+    {
+      "role": "auditor",
+      "description": "Checks the TweetClaw output for safety, completeness, and follow-up actions before delivery",
+      "model": "any",
+      "tools": ["file_write"],
+      "systemPrompt": "You are the delivery auditor for TweetClaw X/Twitter automation.\n\nYour responsibilities:\n1. Confirm the output matches the planner goal and does not include unrelated accounts, private values, or unnecessary raw payloads.\n2. Check that every visible, recurring, paid, or private action has an approval record before it is marked complete.\n3. Summarize returned tweets, replies, followers, users, media, monitor events, webhook tests, or giveaway results in a form a human can review quickly.\n4. Flag any incomplete pagination, rate-limit retry, missing runtime configuration, or ambiguous account identity.\n5. Recommend the next narrow step only when it materially advances the original X/Twitter workflow.\n\nOutput format: Return Markdown with: Summary, Evidence, Approval Log, Gaps, and Next Step."
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {"id": "start", "type": "start", "data": {"label": "X/Twitter Objective"}, "position": {"x": 0, "y": 100}},
+      {"id": "planner", "type": "agent", "data": {"role": "planner", "model": "any"}, "position": {"x": 220, "y": 100}},
+      {"id": "operator", "type": "agent", "data": {"role": "operator", "model": "any"}, "position": {"x": 440, "y": 100}},
+      {"id": "auditor", "type": "agent", "data": {"role": "auditor", "model": "any"}, "position": {"x": 660, "y": 100}},
+      {"id": "end", "type": "end", "data": {"label": "Reviewed X/Twitter Result"}, "position": {"x": 880, "y": 100}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "start", "target": "planner"},
+      {"id": "e2", "source": "planner", "target": "operator"},
+      {"id": "e3", "source": "operator", "target": "auditor"},
+      {"id": "e4", "source": "auditor", "target": "end"}
+    ]
+  },
+  "config": {
+    "maxCost": 0.50,
+    "timeout": 500,
+    "retryOnFailure": true
+  },
+  "examples": [
+    {
+      "input": "Find recent tweets and replies about our launch, group the main objections, and draft a reply thread for approval.",
+      "expectedOutput": "Reviewed launch-monitoring report: targeted tweet and reply searches, objection groups with source URLs, 3 reply drafts held for approval, and a gap note for any incomplete pagination."
+    },
+    {
+      "input": "Run a giveaway draw from a campaign tweet, export the eligible followers, and prepare a public winner announcement.",
+      "expectedOutput": "Approval-gated giveaway workflow: eligibility criteria, follower export summary, draw result evidence, pending winner-announcement draft, and an approval log before posting."
+    }
+  ]
+}
